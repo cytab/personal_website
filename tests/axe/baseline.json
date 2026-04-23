@@ -1,0 +1,4 @@
+{
+  "_comment": "Known/accepted axe-core violations. MUST be kept empty at production; every entry needs a justification and a remediation ticket. Format: { rule-id: { routes: [string], reason: string, ticket: string } }",
+  "accepted": {}
+}

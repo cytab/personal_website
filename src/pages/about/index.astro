@@ -1,0 +1,72 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { pageMeta } from '@/i18n/strings';
+import { about } from '@/content/copy';
+
+const locale = 'en' as const;
+const meta = pageMeta[locale].about;
+const copy = about[locale];
+---
+
+<BaseLayout locale={locale} title={meta.title} description={meta.description} pathKey="about/">
+  <div class="container">
+    <header class="page-header">
+      <span class="section-marker" aria-hidden="true">{copy.eyebrow}</span>
+      <h1>{copy.title}</h1>
+    </header>
+
+    <div class="about-grid">
+      <div class="about-body">
+        <p class="prose t-reading">{copy.body}</p>
+
+        <aside class="cv-card" aria-labelledby="cv-label">
+          <h2 id="cv-label" class="cv-card__label t-micro">{copy.cvLabel} — by email</h2>
+          <p class="cv-card__body prose">{copy.cvBody}</p>
+          <a
+            class="cv-card__cta t-mono"
+            href="mailto:cyrilletabe@gmail.com?subject=CV%20request"
+          >
+            {copy.cvCta} —&nbsp;→
+          </a>
+        </aside>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header { padding-block: var(--space-6); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+  @media (min-width: 1024px) {
+    .about-grid { grid-template-columns: minmax(0, 62ch); }
+  }
+  .cv-card {
+    margin-top: var(--space-6);
+    padding: var(--space-4);
+    border: 1px solid var(--surface-2);
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+  }
+  .cv-card__label {
+    margin: 0 0 var(--space-2) 0;
+    color: var(--ink-muted);
+    letter-spacing: var(--tr-mono);
+  }
+  .cv-card__body {
+    margin: 0 0 var(--space-3) 0;
+  }
+  .cv-card__cta {
+    display: inline-block;
+    color: var(--primary);
+    text-decoration: none;
+    letter-spacing: var(--tr-mono);
+  }
+  .cv-card__cta:hover,
+  .cv-card__cta:focus-visible {
+    text-decoration: underline;
+  }
+</style>

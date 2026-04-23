@@ -1,0 +1,304 @@
+---
+/**
+ * BaseLayout.astro — the site shell.
+ * Sensor Boot orchestration, View Transitions, SEO, landmarks.
+ */
+import '@/styles/global.css';
+import '@/styles/transitions.css';
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
+import '@fontsource/jetbrains-mono/latin-500.css';
+import { ViewTransitions } from 'astro:transitions';
+import { htmlLang, ogLocale, ui, siblingUrl, type Locale } from '@/i18n/strings';
+import Nav from '@/components/Nav.astro';
+import Footer from '@/components/Footer.astro';
+import SensorBoot from '@/components/SensorBoot.astro';
+import BackgroundSlamLayer from '@/components/BackgroundSlamLayer.astro';
+
+export interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  /** Path under the locale root. e.g. "work/", "writing/", "", "about/" */
+  pathKey?: string;
+  /** og:type — "website" default, "article" for posts. */
+  ogType?: 'website' | 'article';
+  /** Per-page canonical override (absolute URL). */
+  canonical?: string;
+  /** Whether to inject the Person JSON-LD (home only). */
+  personSchema?: boolean;
+}
+
+const {
+  locale,
+  title,
+  description,
+  pathKey = '',
+  ogType = 'website',
+  personSchema = false,
+} = Astro.props;
+
+const t = ui[locale];
+const site = Astro.site?.href.replace(/\/$/, '') ?? '';
+const currentUrl = new URL(Astro.url.pathname, Astro.site || 'http://localhost').href;
+
+// Sibling-locale path for hreflang / language switch
+const siblingPath = siblingUrl(locale, pathKey);
+
+const ogImage = `${site}/og-default.png`;
+
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Cyrille Tabe',
+  url: site + '/',
+  jobTitle: 'Robotics Software Engineer',
+  worksFor: [
+    { '@type': 'Organization', name: 'Noovelia' },
+    { '@type': 'Organization', name: 'Odu Technologie' },
+  ],
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Polytechnique Montréal' },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Montréal',
+    addressRegion: 'QC',
+    addressCountry: 'CA',
+  },
+  knowsLanguage: ['en', 'fr'],
+  email: 'mailto:cyrilletabe@gmail.com',
+};
+---
+
+<!doctype html>
+<html lang={htmlLang[locale]} data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- sec-headers-start
+      Agent 14 — security-aware defaults that GitHub Pages cannot set
+      from the server side. See docs/qa/14-security-edge.md for the
+      full header-gap analysis (HSTS, X-Frame-Options,
+      X-Content-Type-Options, Permissions-Policy cannot all be
+      expressed here). Headers below are either CSP-delivered (meta
+      supported) or trivially expressible in meta.
+
+      CSP rationale:
+       - `default-src 'self'`: everything fetched same-origin except
+         what's listed below.
+       - `script-src 'self' 'unsafe-inline'`: the site ships a handful
+         of `is:inline` bootstraps (VT classifier, SensorBoot,
+         LanguageSwitcher hash-preserve, Person JSON-LD). A nonce-based
+         policy cannot be used with meta-delivered CSP on a fully
+         static host (no request context to mint a nonce into). Hashes
+         would require per-page CSP emission; followup work if we ever
+         add a build step to inline them.
+       - `style-src 'self' 'unsafe-inline'`: Astro inlines scoped
+         component styles via `<style>` blocks; hashing them all per
+         page is impractical at this project size. Same followup.
+       - `img-src 'self' data:`: OG PNG + procedural data: URLs.
+       - `font-src 'self'`: fonts are self-hosted via @fontsource.
+       - `connect-src 'self'`: no XHR / fetch cross-origin currently.
+         If Plausible is enabled, add `https://plausible.io` here AND
+         to `script-src`.
+       - `frame-ancestors 'none'`: CANNOT be set via meta (spec
+         disallows). Documented in the header-gap analysis; requires a
+         custom domain + CDN proxy to enforce.
+       - `base-uri 'self'` + `form-action 'self'` to blunt injection.
+       - `upgrade-insecure-requests` since GH Pages is HTTPS-only.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <!--
+      Notes on headers that are NOT set here, by design:
+       - `Strict-Transport-Security` (HSTS): must be a response header;
+         meta `http-equiv` is ignored per spec. GH Pages already
+         redirects to HTTPS; full HSTS requires a proxy (Cloudflare).
+       - `X-Content-Type-Options: nosniff`: same — ignored in meta.
+       - `X-Frame-Options: DENY`: also ignored in meta. The CSP
+         `frame-ancestors` directive would cover this, but meta CSP
+         does not honor `frame-ancestors`. Clickjacking protection is
+         therefore NOT enforced until the site moves behind a domain
+         that can set real response headers.
+       - `Permissions-Policy`: meta support is inconsistent across
+         engines; treated as response-header-only here.
+    -->
+    <!-- sec-headers-end -->
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={currentUrl} />
+
+    <!-- hreflang alternates -->
+    <link
+      rel="alternate"
+      hreflang={locale === 'en' ? 'fr' : 'en'}
+      href={`${site}${siblingPath}`}
+    />
+    <link rel="alternate" hreflang="x-default" href={`${site}/${pathKey}`} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={currentUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={ogLocale[locale]} />
+    <meta
+      property="og:locale:alternate"
+      content={locale === 'en' ? 'fr_CA' : 'en_US'}
+    />
+    <meta property="og:site_name" content="Cyrille Tabe" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Plausible: placeholder; Cyrille swaps data-domain.
+         Deliberately inert until domain is set. -->
+    <!-- <script defer data-domain="cyrilletabe.com" src="https://plausible.io/js/script.js"></script> -->
+
+    <ViewTransitions fallback="animate" />
+
+    {personSchema && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(personLd)} />
+    )}
+
+    <script is:inline>
+      // Detect View Transitions API support; style fallback if absent.
+      if (!('startViewTransition' in document)) {
+        document.documentElement.setAttribute('data-vt-unsupported', '');
+      }
+
+      /**
+       * Classify a from/to route pair into one of the five named replan
+       * metaphors. Returns null when none matches — generic decay+wavefront
+       * stays in place (shared fallback).
+       */
+      function classifyReplan(fromPath, toPath) {
+        var norm = function (p) {
+          try {
+            var u = new URL(p, 'http://x');
+            return u.pathname.replace(/\/$/, '') || '/';
+          } catch (_e) {
+            return String(p || '').replace(/\/$/, '') || '/';
+          }
+        };
+        var f = norm(fromPath);
+        var t = norm(toPath);
+        // Strip locale prefix so the patterns are locale-agnostic.
+        var strip = function (p) { return p.replace(/^\/fr/, '') || '/'; };
+        var fr = strip(f);
+        var tr = strip(t);
+        var isHome = function (p) { return p === '/' || p === ''; };
+        var isWork = function (p) {
+          return p === '/work' || p === '/travaux';
+        };
+        var isAbout = function (p) {
+          return p === '/about' || p === '/a-propos';
+        };
+        var isWriting = function (p) {
+          return p === '/writing' || p === '/ecrits';
+        };
+        var isWritingDetail = function (p) {
+          return /^\/writing\/.+/.test(p) || /^\/ecrits\/.+/.test(p);
+        };
+
+        // Locale toggle — same pathKey, different locale prefix.
+        if (f.indexOf('/fr') === 0 !== (t.indexOf('/fr') === 0)) {
+          return 'TF-frame-broadcast';
+        }
+
+        if ((isHome(fr) && isWork(tr)) || (isWork(fr) && isHome(tr))) {
+          return 'map-handed-to-planner';
+        }
+        if ((isHome(fr) && isAbout(tr)) || (isAbout(fr) && isHome(tr))) {
+          return 'agent-identifies-self';
+        }
+        if ((isHome(fr) && isWriting(tr)) || (isWriting(fr) && isHome(tr))) {
+          return 'notebook-opens';
+        }
+        if (
+          (isWriting(fr) && isWritingDetail(tr)) ||
+          (isWritingDetail(fr) && isWriting(tr))
+        ) {
+          return 'belief-sampled-from-posterior';
+        }
+        return null;
+      }
+
+      // Record replan coordinates + named metaphor from the last clicked
+      // link.
+      document.addEventListener('astro:before-preparation', function (e) {
+        var a = e.sourceElement || e.from;
+        var rect = a && a.getBoundingClientRect
+          ? a.getBoundingClientRect()
+          : null;
+        if (rect) {
+          var vw = window.innerWidth || 1;
+          var vh = window.innerHeight || 1;
+          var x = ((rect.left + rect.width / 2) / vw) * 100;
+          var y = ((rect.top + rect.height / 2) / vh) * 100;
+          document.documentElement.style.setProperty('--replan-x', x + '%');
+          document.documentElement.style.setProperty('--replan-y', y + '%');
+        }
+        var fromPath = location.pathname;
+        var toPath = null;
+        try {
+          if (e.to && e.to.pathname) toPath = e.to.pathname;
+          else if (a && a.getAttribute) toPath = a.getAttribute('href') || '';
+        } catch (_err) {}
+        var replan = classifyReplan(fromPath, toPath || '');
+        if (replan) document.documentElement.setAttribute('data-replan', replan);
+        else document.documentElement.removeAttribute('data-replan');
+        document.documentElement.setAttribute('data-vt-running', '');
+      });
+      document.addEventListener('astro:after-swap', function () {
+        document.documentElement.removeAttribute('data-vt-running');
+        document.documentElement.removeAttribute('data-replan');
+      });
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.skipToMain}</a>
+    <SensorBoot locale={locale} />
+
+    {/* Ambient background SLAM layer. Suppressed on home — the hero
+        canvas already runs there (mandate: do not ship a second
+        Three.js scene simultaneously). */}
+    {pathKey !== '' && (
+      <BackgroundSlamLayer seed={`bg-${locale}-${pathKey || 'home'}`} locale={locale} />
+    )}
+
+    <header class="site-header">
+      <Nav locale={locale} pathKey={pathKey} />
+    </header>
+
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+
+    <Footer locale={locale} pathKey={pathKey} />
+
+    <div class="lattice-wavefront" aria-hidden="true"></div>
+
+    <style>
+      .site-header {
+        padding: var(--space-4) 0;
+      }
+    </style>
+  </body>
+</html>

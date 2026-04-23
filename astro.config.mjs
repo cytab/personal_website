@@ -1,0 +1,44 @@
+import { defineConfig } from 'astro/config';
+import mdx from '@astrojs/mdx';
+import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
+import tailwind from '@astrojs/tailwind';
+
+// Site URL and base path are configurable via env so the same build
+// works for a user-site (cyrilletabe.github.io), a custom domain,
+// or a project-site path (/repo-name/).
+const SITE = process.env.SITE_URL || 'https://cyrilletabe.com';
+const BASE = process.env.BASE_PATH || '/';
+
+export default defineConfig({
+  site: SITE,
+  base: BASE,
+  trailingSlash: 'always',
+  build: {
+    format: 'directory',
+    inlineStylesheets: 'auto',
+  },
+  integrations: [
+    tailwind({ applyBaseStyles: false }),
+    react(),
+    mdx(),
+    sitemap(),
+  ],
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'fr'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
+  compressHTML: true,
+  vite: {
+    ssr: {
+      noExternal: ['framer-motion'],
+    },
+    build: {
+      // Keep chunks small; R3F island should be lazy-loaded on its own chunk.
+      chunkSizeWarningLimit: 260,
+    },
+  },
+});

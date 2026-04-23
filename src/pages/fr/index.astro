@@ -1,0 +1,153 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ClusterPanel from '@/components/ClusterPanel.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import ScrollProgress from '@/components/ScrollProgress.tsx';
+import HeroSceneIsland from '@/components/HeroScene/HeroSceneIsland.astro';
+import { pageMeta } from '@/i18n/strings';
+import {
+  hero,
+  orientation,
+  clusters,
+  projects,
+  projectOrder,
+  closing,
+  frontierBridges,
+} from '@/content/copy';
+
+const locale = 'fr' as const;
+const meta = pageMeta[locale].home;
+const h = hero[locale];
+const o = orientation[locale];
+const c = clusters;
+---
+
+<BaseLayout
+  locale={locale}
+  title={meta.title}
+  description={meta.description}
+  pathKey=""
+  personSchema
+>
+  <div class="container">
+    <section id="hero" class="beat beat--hero" aria-label="Accueil">
+      <span class="section-marker" aria-hidden="true">{h.eyebrow}</span>
+      <h1 class="t-display hero-headline">{h.text}</h1>
+      <HeroSceneIsland seed="home-fr" locale="fr" />
+    </section>
+
+    <section id="orientation" class="beat" aria-labelledby="orientation-title">
+      <span class="section-marker" aria-hidden="true">{o.eyebrow}</span>
+      <h2 id="orientation-title" class="sr-only">Orientation</h2>
+      <p class="prose t-reading">{o.text}</p>
+    </section>
+
+    <section id="proof" class="beat" aria-labelledby="proof-title">
+      <span class="section-marker" aria-hidden="true">§ 02 / LIVRER AVANT DE PRÉSENTER</span>
+      <h2 id="proof-title" class="sr-only">Preuve — projets phares</h2>
+      <div class="proof-strip t-mono" aria-label="Preuve matériel">
+        <span>Noovelia — autonomie AGV</span>
+        <span>Odu — SLAM trottoir</span>
+        <span>RobotClaw — IA locale</span>
+      </div>
+      <div class="project-grid">
+        {projectOrder.map((slug) => {
+          const p = projects[slug];
+          const l = p[locale];
+          return (
+            <ProjectCard
+              slug={p.slug}
+              title={l.title}
+              body={l.body}
+              cluster={p.cluster}
+              status={l.status}
+              href={`/fr/travaux/#${p.slug}`}
+            />
+          );
+        })}
+      </div>
+    </section>
+
+    <section id="depth" class="beat" aria-label="Clusters de recherche">
+      <ClusterPanel id="perception" eyebrow={c.perception[locale].eyebrow} title={c.perception[locale].title} body={c.perception[locale].body} cluster="perception" />
+      <ClusterPanel id="planning"   eyebrow={c.planning[locale].eyebrow}   title={c.planning[locale].title}   body={c.planning[locale].body}   cluster="planning" />
+      <ClusterPanel id="human"      eyebrow={c.human[locale].eyebrow}      title={c.human[locale].title}      body={c.human[locale].body}      cluster="human" />
+      <ClusterPanel id="systems"    eyebrow={c.systems[locale].eyebrow}    title={c.systems[locale].title}    body={c.systems[locale].body}    cluster="systems" />
+    </section>
+
+    <section id="frontier" class="beat" aria-labelledby="frontier-title">
+      <span class="section-marker" aria-hidden="true">§ 07 / FRONTIÈRE</span>
+      <h2 id="frontier-title">Ce que j'intègre</h2>
+      <ul class="frontier-grid">
+        {frontierBridges[locale].map((bridge) => (<li class="frontier-chip">{bridge}</li>))}
+      </ul>
+    </section>
+
+    <section id="signal" class="beat" aria-labelledby="signal-title">
+      <span class="section-marker" aria-hidden="true">§ 08 / SIGNAL</span>
+      <h2 id="signal-title">Écrits</h2>
+      <p class="prose">Rien de publié ici pour l'instant. J'écris lentement, par choix — notes à venir.</p>
+    </section>
+
+    <section id="contact" class="beat" aria-labelledby="contact-title">
+      <span class="section-marker" aria-hidden="true">{closing[locale].eyebrow}</span>
+      <h2 id="contact-title" class="sr-only">Écrivez-moi</h2>
+      <p class="prose t-reading">{closing[locale].text}</p>
+      <p class="contact-cta">
+        <a href="mailto:cyrilletabe@gmail.com?subject=Depuis%20le%20site">
+          Écrivez-moi — cyrilletabe@gmail.com
+        </a>
+      </p>
+    </section>
+  </div>
+
+  <ScrollProgress client:idle locale={locale} />
+</BaseLayout>
+
+<style>
+  .beat { padding-block: var(--space-7); }
+  .beat--hero {
+    padding-block: var(--space-8) var(--space-7);
+    min-height: 70vh;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero-headline {
+    max-width: 22ch;
+    margin-block: var(--space-4) var(--space-5);
+  }
+  @media (max-width: 767px) {
+    .hero-headline { font-size: 2.25rem; line-height: 1.15; }
+  }
+  .proof-strip {
+    display: flex; gap: var(--space-4); flex-wrap: wrap;
+    padding-block: var(--space-3);
+    border-block: 1px solid var(--surface-2);
+    margin-block: var(--space-4);
+  }
+  .proof-strip span { color: var(--ink-muted); }
+  .project-grid {
+    display: grid; grid-template-columns: 1fr;
+    gap: var(--space-4); margin-top: var(--space-5);
+  }
+  @media (min-width: 768px) { .project-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .project-grid { grid-template-columns: repeat(3, 1fr); } }
+  .frontier-grid {
+    list-style: none; padding: 0; margin: var(--space-4) 0 0;
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+  }
+  .frontier-chip {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    letter-spacing: var(--tr-mono);
+    color: var(--ink);
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--surface-2);
+    border-radius: var(--radius-sm);
+  }
+  .contact-cta { margin-top: var(--space-4); }
+  .contact-cta a {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    letter-spacing: var(--tr-mono);
+  }
+</style>

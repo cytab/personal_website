@@ -1,0 +1,116 @@
+\documentclass[9.5pt,letterpaper]{article}
+\usepackage[left=0.4in,right=0.4in,top=0.2in,bottom=0.2in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\usepackage{parskip}
+% Colors
+\definecolor{accent}{HTML}{2B5797}
+\definecolor{medgray}{HTML}{555555}
+% Hyperlink setup
+\hypersetup{colorlinks=true, linkcolor=accent, urlcolor=accent}
+% Section formatting
+\titleformat{\section}{\color{accent}\bfseries\normalsize}{}{0em}{}[\vspace{-0.6em}\color{accent}\rule{\linewidth}{0.4pt}]
+\titlespacing*{\section}{0pt}{5pt}{1pt}
+% Remove page numbers
+\pagestyle{empty}
+% Tight bullet list
+\setlist[itemize]{leftmargin=1.6em, itemsep=0pt, parsep=0pt, topsep=2pt}
+% Reduce parskip
+\setlength{\parskip}{0pt}
+\begin{document}
+% ===== HEADER =====
+\begin{center}
+    {\LARGE\bfseries Cyrille Tabe} \\[1pt]
+    {\footnotesize\color{medgray} +1 514-582-4802 \,|\, cyrilletabepro@gmail.com \,|\, \href{https://linkedin.com/in/cyrille-tabe}{linkedin.com/in/cyrille-tabe} \,|\, \href{https://github.com/cytab}{github.com/cytab} \,|\, Montreal, Canada} \\[2pt]
+    {\small\color{medgray} Robotics engineer specializing in autonomous navigation, SLAM, motion planning, and ML-based perception for mobile robots.}
+\end{center}
+
+\vspace{-4pt}
+
+% ===== EDUCATION =====
+\section*{Education}
+\textbf{Master of Science in Electrical Engineering} \hfill {\small January 2023 -- May 2025} \\
+{\small\textit{Polytechnique Montreal, Montreal, Canada}} \\[2pt]
+\textbf{Bachelor of Engineering in Electrical Engineering} \hfill {\small August 2018 -- December 2022} \\
+{\small\textit{Polytechnique Montreal, Montreal, Canada}}
+
+% ===== TECHNICAL SKILLS =====
+\section*{Technical Skills}
+{\small
+\textbf{Courses:} Robotics, Optimal Control, MPC, Reinforcement Learning, Stochastic Optimization, Motion Planning \\
+\textbf{Languages:} \textbf{C++}, \textbf{Python}, C, Julia, MATLAB, Lua, Shell \\
+\textbf{Frameworks \& Tools:} \textbf{ROS/ROS\,2}, \textbf{PyTorch}, TensorFlow, Sklearn, \textbf{Gazebo}, MuJoCo, CoppeliaSim, \textbf{CasADi}, acados, OSQP, Simulink, \textbf{OpenCV}, Git, Linux, LaTeX
+}
+
+% ===== PROFESSIONAL EXPERIENCE =====
+\section*{Professional Experience}
+\textbf{Noovelia} \,{| Robotics Software Engineer} \hfill {\small July 2025 -- Current} \\
+{\small\textit{Montreal, Canada}}
+\begin{itemize}
+    \item Designed \textbf{behavior trees} for \textbf{AMR/AGV} robots managing complex missions in dynamic industrial environments.
+    \item Developed \textbf{docking and motion-control} algorithms with \textbf{AprilTag-based localization} for precise station alignment.
+    \item Built \textbf{4D lattice-based local planner} and \textbf{nonlinear MPC} with soft constraints (\textbf{C++}, \textbf{Python}, \textbf{ROS\,2}, \textbf{CasADi}, acados), reducing docking deviation by \textbf{14\%} for complex-kinematics robots.
+    \item Fine-tuned \textbf{YOLOv8} on camera data for \textbf{obstacle detection}, improving navigation reliability across diverse facilities.
+\end{itemize}
+
+\vspace{1pt}
+
+\textbf{Odu Technologie} \,{| AI Solution Consultant} \hfill {\small January 2023 -- January 2026} \\
+{\small\textit{Montreal, Canada}}
+\begin{itemize}
+    \item Implemented \textbf{multi-sensor fusion} (\textbf{LiDAR}, cameras, \textbf{IMU}) and \textbf{SLAM} pipelines for robust \textbf{autonomous navigation} in semi-structured outdoor environments.
+    \item Integrated vision stack using \textbf{semantic segmentation} for \textbf{sidewalk navigation} on mobile robot.
+    \item Designed \textbf{task planning pipeline} for autonomous snow-removal robot integrating detection, mapping, and \textbf{trajectory generation}, boosting efficiency by \textbf{12\%}.
+    \item Cut integration time by \textbf{3+ weeks} via reverse-engineering critical components for seamless system integration.
+\end{itemize}
+
+\vspace{1pt}
+
+\textbf{Kinova} \,{| Robotic Software Engineer} \hfill {\small May 2022 -- December 2022} \\
+{\small\textit{Montreal, Canada}}
+\begin{itemize}
+    \item Developed and optimized \textbf{C++ control algorithms} (\textbf{collision detection}, speed tracking), deployed across multiple robots.
+    \item Designed and executed \textbf{testing and validation} procedures, increasing product safety and reliability across robotic platforms.
+    \item Developed and enforced coding guidelines, improving code maintainability and increasing team output by \textbf{10\%}.
+    \item Modeled \textbf{waypoint blending} for \textbf{path planning}, improving path accuracy by \textbf{15\%} for smoother navigation.
+\end{itemize}
+
+\vspace{1pt}
+
+\textbf{E-SMART} \,{| Embedded Software Engineering Intern} \hfill {\small May 2021 -- August 2021} \\
+{\small\textit{Montreal, Canada}}
+\begin{itemize}
+    \item Improved calibration accuracy by \textbf{7\%} by integrating an \textbf{ADC-DAC calibration} system into automotive pedal simulators, complying with quality control standards.
+    \item Implemented \textbf{unit and system tests} in \textbf{C++} and \textbf{Python}, improving library test coverage and requirements satisfaction.
+    \item Reduced data processing time by \textbf{20\%} by designing Python tools for inventory and data management using \textbf{CAN} protocols.
+\end{itemize}
+
+% ===== RESEARCH EXPERIENCE =====
+\section*{Research Experience}
+\textbf{Master's Thesis -- Mobile Robots \& Autonomous Systems Lab} \hfill {\small Jan 2022 -- May 2025} \\
+{\small\textit{Polytechnique Montreal, Montreal, Canada}}
+\begin{itemize}
+    \item Enhanced autonomous decision-making in \textbf{Human Robot Interaction} by modeling \textbf{multi-agent interactions} and uncertain goals with \textbf{stochastic game theory} for improved \textbf{probabilistic inference}, and integrated advanced solver optimizing efficiency by \textbf{20\%} with \textbf{expectation maximization} and \textbf{gradient descent}.
+\end{itemize}
+
+% ===== PROJECTS =====
+\section*{Projects}
+\textbf{Safe MPC Collision Avoidance} \,{\small| Python, ROS, OSQP --- April 2024}
+\begin{itemize}
+    \item Developed \textbf{collision avoidance} via \textbf{Differential Dynamic Programming} for nonlinear optimization in \textbf{ROS Gazebo}.
+\end{itemize}
+
+\textbf{Collision-Free Exploration from Sensor Data} \,{\small| OpenAI Gym, Python, ROS, PyTorch --- April 2023}
+\begin{itemize}
+    \item Implemented \textbf{policy gradient} and \textbf{PPO} with MLP; integrated Gazebo and OpenAI Gym for sensor-based exploration.
+\end{itemize}
+
+\textbf{Intersection Navigation for Autonomous Vehicles} \,{\small| Python, ROS --- September 2022}
+\begin{itemize}
+    \item Developed \textbf{Bezier curve navigation} with \textbf{ROS} integration for autonomous intersection handling.
+\end{itemize}
+
+\end{document}

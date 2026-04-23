@@ -1,0 +1,190 @@
+/* ============================================================
+   tokens.css — cyrille-tabe-site
+   Baseline: Agent 7 typography + layout tokens (§8).
+   Color palette: Agent 3 §13, with Agent 8 / phase-2-revisions
+   light-mode corrections applied (Signal Amber #9A580F,
+   Plasma Cyan #0A7A67 — light-mode only; dark-mode unchanged).
+   Motion tokens: Agent 6 §11.
+   Focus ring: Agent 8 §2 (two-band luminance-driven).
+
+   Forbidden pairings (encode as lint later):
+   - --ink-muted on --surface-2 at text sizes <18px (4.1:1)
+   - --danger on --surface-2 at any body size (3.6:1)
+   ============================================================ */
+
+:root {
+  /* ---------- Font families ---------- */
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system,
+               "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
+               "Cascadia Code", Consolas, monospace;
+
+  /* ---------- Type scale ---------- */
+  --fs-display:        4rem;        /* 64px */
+  --lh-display:        1.0625;
+  --tr-display:        -0.02em;
+
+  --fs-h1:             2.5rem;      /* 40px */
+  --lh-h1:             1.15;
+  --tr-h1:             -0.015em;
+
+  --fs-h2:             1.75rem;     /* 28px */
+  --lh-h2:             1.2143;
+  --tr-h2:             -0.01em;
+
+  --fs-h3:             1.25rem;     /* 20px */
+  --lh-h3:             1.4;
+  --tr-h3:             0;
+
+  --fs-body:           1rem;        /* 16px */
+  --lh-body:           1.625;
+  --tr-body:           0;
+
+  --fs-mono:           0.8125rem;   /* 13px */
+  --lh-mono:           1.5385;
+  --tr-mono:           0.02em;
+
+  --fs-micro:          0.6875rem;   /* 11px */
+  --lh-micro:          1.4545;
+  --tr-micro:          0.06em;
+
+  --fs-reading:        1.125rem;    /* 18px */
+  --lh-reading:        1.6667;
+  --tr-reading:        0;
+
+  --fs-code:           0.875rem;    /* 14px */
+  --lh-code:           1.5714;
+  --tr-code:           0;
+
+  /* ---------- Font weights ---------- */
+  --fw-regular:        400;
+  --fw-medium:         500;
+  --fw-semibold:       600;
+
+  /* ---------- Reading measures ---------- */
+  --measure-body:          62ch;
+  --measure-body-max:      68ch;
+  --measure-reading:       58ch;
+  --measure-reading-max:   64ch;
+  --measure-heading:       20ch;
+  --measure-heading-h2:    28ch;
+  --measure-heading-h3:    36ch;
+
+  /* ---------- Spacing — 8px atomic ---------- */
+  --space-0:   0;
+  --space-1:   0.25rem;   /* 4px */
+  --space-2:   0.5rem;    /* 8px */
+  --space-3:   1rem;      /* 16px */
+  --space-4:   1.5rem;    /* 24px */
+  --space-5:   2rem;      /* 32px */
+  --space-6:   2.5rem;    /* 40px */
+  --space-7:   4rem;      /* 64px */
+  --space-8:   6rem;      /* 96px */
+  --space-9:   10rem;     /* 160px */
+
+  /* ---------- Radii ---------- */
+  --radius-none:       0;
+  --radius-sm:         2px;
+  --radius-md:         4px;
+  --radius-lg:         8px;
+
+  /* ---------- Stroke ---------- */
+  --stroke-hairline:   1px;
+  --stroke-icon:       1.5px;
+  --stroke-icon-sm:    1.25px;
+
+  /* ---------- Motion (Agent 6 §11) ---------- */
+  --ease-default: cubic-bezier(0.22, 1, 0.36, 1);   /* Observer */
+  --ease-system:  cubic-bezier(0.65, 0, 0.35, 1);   /* Stepper */
+  --ease-ambient: cubic-bezier(0.4, 0, 0.6, 1);     /* Drift */
+
+  --dur-tick:       80ms;
+  --dur-fast:      160ms;
+  --dur-base:      240ms;
+  --dur-slow:      400ms;
+  --dur-narrative: 800ms;
+  --dur-scene:    1200ms;
+
+  --stagger-tight:  30ms;
+  --stagger-base:   60ms;
+  --stagger-loose: 120ms;
+
+  --heartbeat-period: 2400ms;
+
+  --replan-x: 50%;
+  --replan-y: 50%;
+
+  /* ---------- Focus ring (Agent 8 §2 + phase-2-revisions) ---------- */
+  --focus-ring-width:  2px;
+  --focus-ring-offset: 3px;
+  --focus-ring-inner:  var(--bg);   /* surface color — set per element */
+  --focus-ring-outer:  var(--ink);
+
+  /* ---------- Colors — DARK (default) ---------- */
+  --bg:            #0B0D0E;
+  --surface-1:     #15191B;
+  --surface-2:     #1F2427;
+  --ink:           #E6E1D6;
+  --ink-muted:     #8E8A82;
+  --primary:       #F3A03B;   /* Signal Amber — dark-mode unchanged */
+  --accent:        #62E0C8;   /* Plasma Cyan — dark-mode unchanged */
+  --danger:        #E5484D;
+
+  color-scheme: dark;
+}
+
+/* ---------- Colors — LIGHT (with Agent 8 / phase-2-revisions fixes) ---------- */
+[data-theme="light"] {
+  --bg:            #F5F2EB;
+  --surface-1:     #ECE7DC;
+  --surface-2:     #E0D9CB;
+  --ink:           #1A1C1D;
+  --ink-muted:     #5A5650;
+  --primary:       #9A580F;   /* was #B86A14 — phase-2-revisions AA fix */
+  --accent:        #0A7A67;   /* was #0F8F7A — phase-2-revisions AA fix */
+  --danger:        #B3282D;
+  color-scheme: light;
+}
+
+/* System preference follow when no explicit theme */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg:            #F5F2EB;
+    --surface-1:     #ECE7DC;
+    --surface-2:     #E0D9CB;
+    --ink:           #1A1C1D;
+    --ink-muted:     #5A5650;
+    --primary:       #9A580F;
+    --accent:        #0A7A67;
+    --danger:        #B3282D;
+    color-scheme: light;
+  }
+}
+
+/* ---------- FR tracking on display ---------- */
+:lang(fr) {
+  --tr-display: -0.015em;
+}
+
+/* ---------- Locale-aware quotes ---------- */
+:root {
+  quotes: "\201C" "\201D" "\2018" "\2019";
+}
+:lang(fr) {
+  quotes: "\00AB\00A0" "\00A0\00BB" "\2039\00A0" "\00A0\203A";
+}
+
+/* ---------- Reduced motion tokens ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-tick: 0ms;
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+    --dur-narrative: 0ms;
+    --dur-scene: 0ms;
+    --stagger-tight: 0ms;
+    --stagger-base: 0ms;
+    --stagger-loose: 0ms;
+  }
+}

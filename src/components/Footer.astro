@@ -1,0 +1,158 @@
+---
+import { ui, localePrefix, type Locale } from '@/i18n/strings';
+
+export interface Props { locale: Locale; pathKey: string }
+const { locale } = Astro.props;
+const t = ui[locale];
+const prefix = localePrefix(locale);
+const workPath = locale === 'en' ? 'work/' : 'travaux/';
+const aboutPath = locale === 'en' ? 'about/' : 'a-propos/';
+const year = new Date().getFullYear();
+
+// GitHub handle sourced from CV_CYRILLE_TABE_comments_oeucu/main.tex
+// (`github.com/cytab`). If that proves wrong, update here + bubble up.
+const githubHandle = 'cytab';
+const githubUrl = `https://github.com/${githubHandle}`;
+
+const socialLabels = {
+  en: {
+    socials: 'Contact links',
+    email: 'Email Cyrille',
+    github: 'Cyrille on GitHub',
+  },
+  fr: {
+    socials: 'Liens de contact',
+    email: 'Écrire à Cyrille',
+    github: 'Cyrille sur GitHub',
+  },
+} as const;
+const sl = socialLabels[locale];
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <nav aria-label={t.footerNav}>
+      <ul class="site-footer__links t-mono">
+        <li><a href={prefix}>{t.navHome}</a></li>
+        <li><a href={`${prefix}${workPath}`}>{t.navWork}</a></li>
+        <li><a href={`${prefix}${aboutPath}`}>{t.navAbout}</a></li>
+        <li><a href="mailto:cyrilletabe@gmail.com">{t.writeToMe}</a></li>
+      </ul>
+    </nav>
+
+    <ul class="site-footer__socials" aria-label={sl.socials}>
+      <li>
+        <a
+          class="site-footer__social"
+          href="mailto:cyrilletabe@gmail.com"
+          aria-label={sl.email}
+          title="cyrilletabe@gmail.com"
+        >
+          {/* Sensor-style antenna glyph — matches the BT-nav line-weight.
+              (Agent 2 §5 item 19 + Agent 3 §7: antenna for email, not
+              envelope.) */}
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <line x1="10" y1="13" x2="10" y2="18" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+            <circle cx="10" cy="11" r="2" fill="none" stroke="currentColor" stroke-width="1.25" />
+            <path d="M5 7 Q10 2 15 7" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+            <path d="M3 9 Q10 0 17 9" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" opacity="0.5" />
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a
+          class="site-footer__social"
+          href={githubUrl}
+          rel="noopener noreferrer"
+          aria-label={sl.github}
+          title={githubUrl}
+        >
+          {/* GitHub mark — 1-weight line version to match the sensor
+              iconography family. */}
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              fill="currentColor"
+              d="M10 1.5a8.5 8.5 0 0 0-2.7 16.56c.42.08.58-.18.58-.41v-1.6c-2.36.51-2.86-1-2.86-1-.39-.99-.96-1.25-.96-1.25-.78-.54.06-.53.06-.53.86.06 1.31.89 1.31.89.76 1.31 2.01.93 2.5.71.08-.56.3-.93.54-1.15-1.88-.21-3.86-.94-3.86-4.19 0-.92.33-1.68.87-2.27-.09-.22-.38-1.08.08-2.25 0 0 .71-.23 2.33.87a8.08 8.08 0 0 1 4.24 0c1.61-1.1 2.32-.87 2.32-.87.46 1.17.17 2.03.08 2.25.54.59.87 1.35.87 2.27 0 3.26-1.98 3.98-3.87 4.19.31.26.58.78.58 1.57v2.33c0 .23.15.5.59.41A8.5 8.5 0 0 0 10 1.5Z"
+            />
+          </svg>
+        </a>
+      </li>
+    </ul>
+
+    <p class="site-footer__meta t-micro">
+      {t.copyright} {year}. {t.builtOn}
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-8);
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--surface-2);
+  }
+  .site-footer__inner {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    justify-content: space-between;
+    align-items: center;
+  }
+  @media (min-width: 768px) { .site-footer__inner { padding-inline: 2rem; } }
+  @media (min-width: 1024px) { .site-footer__inner { padding-inline: 3rem; } }
+  @media (min-width: 1440px) { .site-footer__inner { padding-inline: 5rem; } }
+
+  .site-footer__links {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; gap: var(--space-4); flex-wrap: wrap;
+  }
+  .site-footer__links a {
+    color: var(--ink-muted);
+    text-decoration: none;
+  }
+  .site-footer__links a:hover, .site-footer__links a:focus-visible { color: var(--ink); }
+
+  .site-footer__socials {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; gap: var(--space-3); align-items: center;
+  }
+  .site-footer__social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--ink-muted);
+    border: 1px solid var(--surface-2);
+    border-radius: var(--radius-sm);
+    transition: color var(--dur-base) var(--ease-default),
+                border-color var(--dur-base) var(--ease-default);
+  }
+  .site-footer__social:hover,
+  .site-footer__social:focus-visible {
+    color: var(--ink);
+    border-color: var(--ink);
+    outline: none;
+  }
+  .site-footer__social:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  .site-footer__meta { margin: 0; }
+</style>

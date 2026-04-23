@@ -1,0 +1,45 @@
+# =====================================================================
+# public/_headers — Cloudflare Pages / Netlify-compatible header rules.
+#
+# IMPORTANT: GitHub Pages DOES NOT honor this file. It is served as a
+# static asset (i.e. visitors can GET /_headers and receive its text)
+# but the Pages server ignores its semantics. This file is here so that
+# if/when the site migrates behind Cloudflare Pages or Netlify, the
+# full header set activates automatically. Until then, client-side
+# enforcement falls to the `<meta http-equiv>` block in BaseLayout.
+#
+# See docs/qa/14-security-edge.md for the full header-gap analysis.
+# =====================================================================
+
+/*
+  # Strict transport: only effective on the host that serves this file.
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # Clickjacking protection — cannot be set via meta.
+  X-Frame-Options: DENY
+
+  # Disable MIME sniffing.
+  X-Content-Type-Options: nosniff
+
+  # Referrer policy (duplicates the meta value; response header wins).
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Constrain powerful browser APIs. The site uses none of these.
+  Permissions-Policy: accelerometer=(), autoplay=(), browsing-topics=(), camera=(), clipboard-read=(), clipboard-write=(self), cross-origin-isolated=(), display-capture=(), encrypted-media=(), fullscreen=(self), gamepad=(), geolocation=(), gyroscope=(), hid=(), identity-credentials-get=(), idle-detection=(), interest-cohort=(), keyboard-map=(), local-fonts=(), magnetometer=(), microphone=(), midi=(), otp-credentials=(), payment=(), picture-in-picture=(), publickey-credentials-create=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), storage-access=(), usb=(), web-share=(self), window-management=(), xr-spatial-tracking=()
+
+  # Full CSP including frame-ancestors, which meta-CSP cannot express.
+  # Keep in sync with the meta-CSP in src/layouts/BaseLayout.astro.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests
+
+  # Cross-origin isolation posture. Conservative defaults; tighten if
+  # the site ever embeds third-party frames (it doesn't today).
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+
+# Long-lived fingerprinted assets.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fonts are fingerprinted by @fontsource → also immutable.
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable

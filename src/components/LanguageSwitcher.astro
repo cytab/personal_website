@@ -1,0 +1,46 @@
+---
+import { ui, siblingUrl, type Locale } from '@/i18n/strings';
+
+export interface Props { locale: Locale; pathKey: string }
+const { locale, pathKey } = Astro.props;
+const t = ui[locale];
+const href = siblingUrl(locale, pathKey);
+const targetLang = locale === 'en' ? 'fr' : 'en';
+const htmlLangAttr = targetLang === 'fr' ? 'fr-CA' : 'en';
+---
+
+<a
+  class="lang-switcher t-mono"
+  href={href}
+  hreflang={targetLang}
+  lang={htmlLangAttr}
+  rel="alternate"
+  aria-label={t.langSwitchAriaLabel}
+>
+  {t.langSwitch}
+</a>
+
+<script is:inline>
+  // Preserve fragment across language switches (Agent 4 §4.5).
+  // Zero-JS fallback: static href works — fragment just drops.
+  document.addEventListener('DOMContentLoaded', () => {
+    const link = document.querySelector('.lang-switcher');
+    if (!(link instanceof HTMLAnchorElement)) return;
+    const updateHash = () => {
+      const hash = window.location.hash;
+      const url = new URL(link.href);
+      if (hash) url.hash = hash; else url.hash = '';
+      link.href = url.toString();
+    };
+    updateHash();
+    window.addEventListener('hashchange', updateHash);
+  });
+</script>
+
+<style>
+  .lang-switcher {
+    color: var(--ink-muted);
+    text-decoration: none;
+  }
+  .lang-switcher:hover, .lang-switcher:focus-visible { color: var(--ink); }
+</style>

@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { pageMeta, ui } from '@/i18n/strings';
+
+const locale = 'en' as const;
+const meta = pageMeta[locale].notFound;
+const t = ui[locale];
+---
+
+<BaseLayout locale={locale} title={meta.title} description={meta.description} pathKey="">
+  <div class="container">
+    <section class="notfound">
+      <span class="section-marker" aria-hidden="true">§ 404 / ROUTE NOT IN PLAN</span>
+      <h1>{t.notFoundTitle}</h1>
+      <p class="prose t-reading">{t.notFoundBody}</p>
+      <p>
+        <a href="/">{t.backToStart} →</a>
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: var(--space-8);
+    min-height: 60vh;
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import UncertaintyEllipse from '@/components/UncertaintyEllipse.static.astro';
+import { pageMeta } from '@/i18n/strings';
+import { projects, projectOrder } from '@/content/copy';
+
+const locale = 'fr' as const;
+const meta = pageMeta[locale].work;
+
+const clusterAnchor = {
+  perception: { href: '/fr/#perception', label: 'Perception & intelligence spatiale' },
+  planning: { href: '/fr/#planning', label: 'Planification & décision sous incertitude' },
+  human: { href: '/fr/#human', label: 'Compréhension humaine' },
+  systems: { href: '/fr/#systems', label: 'Systèmes & infrastructure' },
+} as const;
+---
+
+<BaseLayout locale={locale} title={meta.title} description={meta.description} pathKey="travaux/">
+  <div class="container">
+    <header class="page-header">
+      <span class="section-marker" aria-hidden="true">§ 10 / TRAVAUX</span>
+      <h1>Travaux</h1>
+      <p class="prose t-reading">
+        Cinq systèmes qui existent dans le monde réel. Chacun m'a appris quelque chose qui ne se lit pas.
+      </p>
+    </header>
+
+    <nav class="project-toc t-mono" aria-label="Projets">
+      <ol>
+        {projectOrder.map((slug) => (
+          <li><a href={`#${slug}`}>{projects[slug][locale].title}</a></li>
+        ))}
+      </ol>
+    </nav>
+
+    <div class="work-stack">
+      {projectOrder.map((slug) => {
+        const p = projects[slug];
+        const l = p[locale];
+        const rel = clusterAnchor[p.cluster];
+        return (
+          <section id={p.slug} class="work-section" aria-labelledby={`${p.slug}-title`}>
+            <header class="work-section__header">
+              <div class="work-section__badge"><UncertaintyEllipse cluster={p.cluster} size={48} /></div>
+              <div>
+                <h2 id={`${p.slug}-title`}>{l.title}</h2>
+                <p class="t-micro">{l.status}</p>
+              </div>
+            </header>
+            <p class="prose t-reading">{l.bodyLong}</p>
+            <p class="work-section__related t-mono">
+              En lien : <a href={rel.href}>{rel.label}</a>
+            </p>
+          </section>
+        );
+      })}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-header { padding-block: var(--space-6); }
+  .project-toc {
+    padding-block: var(--space-3);
+    border-block: 1px solid var(--surface-2);
+    margin-block: var(--space-4) var(--space-6);
+  }
+  .project-toc ol {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-wrap: wrap; gap: var(--space-4);
+  }
+  .project-toc a { color: var(--ink-muted); text-decoration: none; }
+  .project-toc a:hover, .project-toc a:focus-visible { color: var(--ink); }
+  .work-section { padding-block: var(--space-6); border-top: 1px solid var(--surface-2); }
+  .work-section__header { display: flex; gap: var(--space-3); align-items: center; margin-bottom: var(--space-4); }
+  .work-section__badge { flex-shrink: 0; }
+  .work-section__related {
+    margin-top: var(--space-4);
+    color: var(--ink-muted);
+  }
+  .work-section__related a {
+    color: var(--ink-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--surface-2);
+  }
+  .work-section__related a:hover,
+  .work-section__related a:focus-visible {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+</style>

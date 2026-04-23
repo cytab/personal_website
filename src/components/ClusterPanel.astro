@@ -1,0 +1,62 @@
+---
+import UncertaintyEllipseStatic from '@/components/UncertaintyEllipse.static.astro';
+import UncertaintyEllipse from '@/components/UncertaintyEllipse.tsx';
+
+export type ClusterKey = 'perception' | 'planning' | 'human' | 'systems';
+
+export interface Props {
+  id: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  cluster: ClusterKey;
+}
+
+const { id, eyebrow, title, body, cluster } = Astro.props;
+---
+
+<section class="cluster-panel" id={id} aria-labelledby={`${id}-title`}>
+  <div class="cluster-panel__header">
+    <span class="section-marker" aria-hidden="true">{eyebrow}</span>
+    <h2 id={`${id}-title`}>{title}</h2>
+  </div>
+  <div class="cluster-panel__body">
+    <div class="cluster-panel__sigil" aria-hidden="true">
+      {/* Static SVG ships as SSR fallback for no-JS and reduced-motion
+          parity; the React island hydrates on scroll and takes over. */}
+      <noscript>
+        <UncertaintyEllipseStatic cluster={cluster} size={160} />
+      </noscript>
+      <UncertaintyEllipse client:visible cluster={cluster} size={160} />
+    </div>
+    <p class="cluster-panel__text prose">{body}</p>
+  </div>
+</section>
+
+<style>
+  .cluster-panel {
+    padding-block: var(--space-7);
+    border-top: 1px solid var(--surface-2);
+  }
+  .cluster-panel__header { margin-bottom: var(--space-4); }
+  .cluster-panel__body {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .cluster-panel__body {
+      grid-template-columns: 200px 1fr;
+      align-items: start;
+    }
+  }
+  .cluster-panel__sigil {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .cluster-panel__text {
+    color: var(--ink);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+  }
+</style>

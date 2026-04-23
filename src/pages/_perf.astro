@@ -1,0 +1,32 @@
+---
+/**
+ * /_perf — dev-only performance dashboard for the SLAM scene.
+ * Build-excluded unless PERF_DASHBOARD=1 at build time. The guard
+ * works by re-throwing from getStaticPaths so the route is pruned.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PerfDashboard from '@/components/PerfDashboard.tsx';
+import HeroSceneIsland from '@/components/HeroScene/HeroSceneIsland.astro';
+
+const shouldShip = process.env.PERF_DASHBOARD === '1' || import.meta.env.DEV;
+
+if (!shouldShip) {
+  return Astro.redirect('/404');
+}
+---
+
+<BaseLayout
+  locale="en"
+  title="Perf dashboard (dev)"
+  description="Internal perf view — FPS / heap / draw calls."
+  pathKey="_perf/"
+>
+  <div class="container">
+    <h1 class="t-h1">SLAM scene — perf</h1>
+    <p class="prose">Dev-only. Excluded from production builds unless <code>PERF_DASHBOARD=1</code>.</p>
+    <PerfDashboard client:only="react" />
+    <section style="margin-top:2rem">
+      <HeroSceneIsland seed="perf" locale="en" />
+    </section>
+  </div>
+</BaseLayout>

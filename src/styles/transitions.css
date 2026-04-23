@@ -1,0 +1,203 @@
+/* ============================================================
+   transitions.css — route-level replan transitions.
+   Five named metaphors (Agent 6 §3 / Agent 5 §6 + Agent 10 mandate):
+     - map-handed-to-planner       (/ ↔ /work/)
+     - agent-identifies-self       (/ ↔ /about/)
+     - notebook-opens              (/ ↔ /writing/)
+     - belief-sampled-from-posterior  (/writing/ ↔ /writing/<slug>/)
+     - TF-frame-broadcast          (locale toggle)
+
+   Fallback (Safari <17 / Firefox <129): desaturated crossfade.
+   Reduced-motion: 1ms duration (effectively instant).
+   ============================================================ */
+
+/* ---------- Default decay+wavefront (shared fallback path) ---------- */
+::view-transition-old(root) {
+  animation: replan-decay var(--dur-slow) var(--ease-system) forwards;
+}
+::view-transition-new(root) {
+  animation: replan-expand var(--dur-narrative) var(--ease-system) forwards;
+}
+
+@keyframes replan-decay {
+  from { opacity: 1; filter: saturate(1); }
+  to   { opacity: 0.2; filter: saturate(0.2); }
+}
+
+@keyframes replan-expand {
+  from {
+    clip-path: circle(0% at var(--replan-x, 50%) var(--replan-y, 50%));
+    opacity: 0.85;
+  }
+  to {
+    clip-path: circle(150% at var(--replan-x, 50%) var(--replan-y, 50%));
+    opacity: 1;
+  }
+}
+
+/* ========================================================================
+   Named per-route-pair choreography. The active replan name is injected
+   onto <html data-replan="<name>"> by the client handler (see
+   BaseLayout.astro). Each name swaps out the old/new animations to
+   carry its own character.
+   ======================================================================== */
+
+/* ---------- map-handed-to-planner (home ↔ /work/) ----------
+ * Old path contracts to a dense grid. New path expands outward as
+ * concentric BFS rings from the click. */
+html[data-replan="map-handed-to-planner"] ::view-transition-old(root) {
+  animation: replan-decay var(--dur-slow) var(--ease-system) forwards;
+}
+html[data-replan="map-handed-to-planner"] ::view-transition-new(root) {
+  animation: replan-bfs-rings var(--dur-narrative) var(--ease-system) forwards;
+}
+@keyframes replan-bfs-rings {
+  0%   {
+    clip-path: circle(0% at var(--replan-x, 50%) var(--replan-y, 50%));
+    filter: saturate(0.5);
+  }
+  35%  {
+    clip-path: circle(35% at var(--replan-x, 50%) var(--replan-y, 50%));
+    filter: saturate(0.85);
+  }
+  70%  {
+    clip-path: circle(85% at var(--replan-x, 50%) var(--replan-y, 50%));
+  }
+  100% {
+    clip-path: circle(150% at var(--replan-x, 50%) var(--replan-y, 50%));
+    filter: saturate(1);
+  }
+}
+
+/* ---------- agent-identifies-self (home ↔ /about/) ----------
+ * Lattice contracts to centroid, releases a single amber point
+ * (visualised as a short radial flash). */
+html[data-replan="agent-identifies-self"] ::view-transition-old(root) {
+  animation: replan-contract var(--dur-slow) var(--ease-system) forwards;
+}
+html[data-replan="agent-identifies-self"] ::view-transition-new(root) {
+  animation: replan-release var(--dur-narrative) var(--ease-system) forwards;
+}
+@keyframes replan-contract {
+  from { clip-path: inset(0 0 0 0); opacity: 1; transform: scale(1); }
+  to   { clip-path: inset(45% 45% 45% 45%); opacity: 0.15; transform: scale(0.94); }
+}
+@keyframes replan-release {
+  0%   {
+    clip-path: inset(45% 45% 45% 45%);
+    filter: brightness(1.4);
+  }
+  25%  {
+    clip-path: inset(25% 25% 25% 25%);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    filter: brightness(1);
+  }
+}
+
+/* ---------- notebook-opens (home ↔ /writing/) ----------
+ * Paper-unfold: two horizontal bands of lattice converge into a line,
+ * then the new content opens vertically outward. */
+html[data-replan="notebook-opens"] ::view-transition-old(root) {
+  animation: replan-fold var(--dur-slow) var(--ease-system) forwards;
+}
+html[data-replan="notebook-opens"] ::view-transition-new(root) {
+  animation: replan-unfold var(--dur-narrative) var(--ease-system) forwards;
+}
+@keyframes replan-fold {
+  from { clip-path: inset(0 0 0 0); }
+  to   { clip-path: inset(48% 0 48% 0); opacity: 0.2; }
+}
+@keyframes replan-unfold {
+  from { clip-path: inset(48% 0 48% 0); transform: scaleY(0.9); }
+  to   { clip-path: inset(0 0 0 0); transform: scaleY(1); }
+}
+
+/* ---------- belief-sampled-from-posterior (writing-index ↔ detail) ----
+ * Particles sample radially, condensing into the target article. */
+html[data-replan="belief-sampled-from-posterior"] ::view-transition-old(root) {
+  animation: replan-disperse var(--dur-slow) var(--ease-system) forwards;
+}
+html[data-replan="belief-sampled-from-posterior"] ::view-transition-new(root) {
+  animation: replan-sample var(--dur-narrative) var(--ease-system) forwards;
+}
+@keyframes replan-disperse {
+  from { opacity: 1; filter: blur(0); }
+  to   { opacity: 0; filter: blur(3px); }
+}
+@keyframes replan-sample {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+    clip-path: circle(20% at var(--replan-x, 50%) var(--replan-y, 50%));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    clip-path: circle(150% at var(--replan-x, 50%) var(--replan-y, 50%));
+  }
+}
+
+/* ---------- TF-frame-broadcast (locale toggle) ----------
+ * A coordinate-frame rotates ~180° around the vertical axis as the two
+ * locales swap. */
+html[data-replan="TF-frame-broadcast"] ::view-transition-old(root) {
+  animation: replan-frame-out var(--dur-slow) var(--ease-system) forwards;
+  transform-origin: 50% 50%;
+}
+html[data-replan="TF-frame-broadcast"] ::view-transition-new(root) {
+  animation: replan-frame-in var(--dur-slow) var(--ease-system) forwards;
+  transform-origin: 50% 50%;
+}
+@keyframes replan-frame-out {
+  from { transform: perspective(1200px) rotateY(0deg); opacity: 1; }
+  to   { transform: perspective(1200px) rotateY(-90deg); opacity: 0.15; }
+}
+@keyframes replan-frame-in {
+  from { transform: perspective(1200px) rotateY(90deg); opacity: 0.15; }
+  to   { transform: perspective(1200px) rotateY(0deg); opacity: 1; }
+}
+
+/* ---------- No-View-Transition fallback (Safari <17 / FF <129) ---------- */
+html[data-vt-unsupported] ::view-transition-old(root),
+html[data-vt-unsupported] ::view-transition-new(root) {
+  animation: fallback-fade var(--dur-slow) var(--ease-default) forwards;
+}
+
+@keyframes fallback-fade {
+  from { opacity: 0; filter: saturate(0.2); }
+  to   { opacity: 1; filter: saturate(1); }
+}
+
+/* Reduced motion: collapse all replans to a near-instant hint. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 1ms !important;
+    animation-timing-function: linear !important;
+  }
+}
+
+/* Lattice wavefront accent — thin ink rule that sweeps across
+   the body at the start of the new route. Used by the generic
+   replan; suppressed during named replans (which have their own
+   visual signature). */
+.lattice-wavefront {
+  position: fixed;
+  inset: auto 0 0 0;
+  height: 1px;
+  background: var(--primary);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 999;
+  transform-origin: 0 50%;
+}
+html[data-vt-running]:not([data-replan]) .lattice-wavefront {
+  animation: wavefront-sweep var(--dur-narrative) var(--ease-system) forwards;
+}
+@keyframes wavefront-sweep {
+  0%   { opacity: 0; transform: scaleX(0); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: scaleX(1); }
+}
