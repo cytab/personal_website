@@ -1,56 +1,43 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import UncertaintyEllipse from '@/components/UncertaintyEllipse.static.astro';
 import { pageMeta } from '@/i18n/strings';
 import { projects, projectOrder } from '@/content/copy';
 
 const locale = 'fr' as const;
 const meta = pageMeta[locale].work;
-
-const clusterAnchor = {
-  perception: { href: '/fr/#perception', label: 'Perception & intelligence spatiale' },
-  planning: { href: '/fr/#planning', label: 'Planification & décision sous incertitude' },
-  human: { href: '/fr/#human', label: 'Compréhension humaine' },
-  systems: { href: '/fr/#systems', label: 'Systèmes & infrastructure' },
-} as const;
 ---
 
 <BaseLayout locale={locale} title={meta.title} description={meta.description} pathKey="travaux/">
-  <div class="container">
+  <div class="page">
     <header class="page-header">
-      <span class="section-marker" aria-hidden="true">§ 10 / TRAVAUX</span>
-      <h1>Travaux</h1>
+      <h1 class="page-title">Travaux</h1>
       <p class="prose t-reading">
         Cinq systèmes qui existent dans le monde réel. Chacun m'a appris quelque chose qui ne se lit pas.
       </p>
     </header>
 
-    <nav class="project-toc t-mono" aria-label="Projets">
-      <ol>
+    <nav class="toc" aria-label="Projets">
+      <ul>
         {projectOrder.map((slug) => (
           <li><a href={`#${slug}`}>{projects[slug][locale].title}</a></li>
         ))}
-      </ol>
+      </ul>
     </nav>
 
-    <div class="work-stack">
+    <div class="work">
       {projectOrder.map((slug) => {
         const p = projects[slug];
         const l = p[locale];
-        const rel = clusterAnchor[p.cluster];
         return (
-          <section id={p.slug} class="work-section" aria-labelledby={`${p.slug}-title`}>
-            <header class="work-section__header">
-              <div class="work-section__badge"><UncertaintyEllipse cluster={p.cluster} size={48} /></div>
-              <div>
-                <h2 id={`${p.slug}-title`}>{l.title}</h2>
-                <p class="t-micro">{l.status}</p>
-              </div>
+          <section id={p.slug} class="work__entry" aria-labelledby={`${p.slug}-title`}>
+            <header class="work__header">
+              <h2 id={`${p.slug}-title`} class="work__title">{l.title}</h2>
+              <p class="work__status">{l.status}</p>
             </header>
             <p class="prose t-reading">{l.bodyLong}</p>
-            <p class="work-section__related t-mono">
-              En lien : <a href={rel.href}>{rel.label}</a>
-            </p>
+            <ul class="work__tech" aria-label="Tech">
+              {p.tech.map((item) => <li>{item}</li>)}
+            </ul>
           </section>
         );
       })}
@@ -59,33 +46,85 @@ const clusterAnchor = {
 </BaseLayout>
 
 <style>
-  .page-header { padding-block: var(--space-6); }
-  .project-toc {
+  .page {
+    max-width: 960px;
+    margin-inline: auto;
+    padding: var(--space-5) 1rem var(--space-7);
+  }
+  @media (min-width: 768px) {
+    .page { padding-inline: 2rem; }
+  }
+
+  .page-header { padding-block: var(--space-4) var(--space-5); }
+  .page-title {
+    font-family: var(--font-body);
+    font-size: 2rem;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-bottom: var(--space-3);
+  }
+
+  .toc {
     padding-block: var(--space-3);
     border-block: 1px solid var(--surface-2);
-    margin-block: var(--space-4) var(--space-6);
+    margin-block: var(--space-3) var(--space-5);
   }
-  .project-toc ol {
+  .toc ul {
     list-style: none; padding: 0; margin: 0;
     display: flex; flex-wrap: wrap; gap: var(--space-4);
   }
-  .project-toc a { color: var(--ink-muted); text-decoration: none; }
-  .project-toc a:hover, .project-toc a:focus-visible { color: var(--ink); }
-  .work-section { padding-block: var(--space-6); border-top: 1px solid var(--surface-2); }
-  .work-section__header { display: flex; gap: var(--space-3); align-items: center; margin-bottom: var(--space-4); }
-  .work-section__badge { flex-shrink: 0; }
-  .work-section__related {
-    margin-top: var(--space-4);
-    color: var(--ink-muted);
-  }
-  .work-section__related a {
+  .toc a {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    letter-spacing: var(--tr-mono);
     color: var(--ink-muted);
     text-decoration: none;
-    border-bottom: 1px solid var(--surface-2);
+    transition: color 120ms ease;
   }
-  .work-section__related a:hover,
-  .work-section__related a:focus-visible {
+  .toc a:hover,
+  .toc a:focus-visible {
     color: var(--ink);
-    border-color: var(--ink);
+  }
+
+  .work__entry {
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--surface-2);
+    scroll-margin-top: 4rem;
+  }
+  .work__header {
+    margin-bottom: var(--space-3);
+  }
+  .work__title {
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    font-weight: var(--fw-semibold);
+    color: var(--ink);
+    margin-bottom: var(--space-1);
+  }
+  .work__status {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 0;
+  }
+  .work__tech {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-4) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: var(--tr-micro);
+    color: var(--ink-muted);
+  }
+  .work__tech li {
+    padding: 2px var(--space-2);
+    border: 1px solid var(--surface-2);
+    border-radius: var(--radius-sm);
   }
 </style>

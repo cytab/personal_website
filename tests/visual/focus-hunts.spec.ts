@@ -12,7 +12,7 @@ test.describe('FR long-text overflow at 375px', () => {
   // At the 375px mobile breakpoint the hero, project cards, and
   // closing invitation are the likely offenders. We check document
   // scrollWidth and the three candidate sections.
-  for (const url of ['/fr/', '/fr/travaux/', '/fr/a-propos/']) {
+  for (const url of ['/fr/', '/fr/travaux/', '/fr/recherche/', '/fr/a-propos/']) {
     test(`no horizontal overflow on ${url}`, async ({ page }, testInfo) => {
       test.skip(
         testInfo.project.name !== 'webkit-mobile',
@@ -186,7 +186,7 @@ test.describe('no stray emoji in copy', () => {
   // for emoji code-points and fail if any are present. (Arrow glyphs
   // like › are OK — we only reject the Emoji Presentation class.)
   const EMOJI_RE = /[\u{1F300}-\u{1FAFF}\u{1F000}-\u{1F2FF}\u{2600}-\u{27BF}\u{1F600}-\u{1F64F}]/u;
-  for (const url of ['/', '/work/', '/about/', '/fr/', '/fr/travaux/', '/fr/a-propos/']) {
+  for (const url of ['/', '/work/', '/research/', '/about/', '/fr/', '/fr/travaux/', '/fr/recherche/', '/fr/a-propos/']) {
     test(`no emoji in rendered text on ${url}`, async ({ page }, testInfo) => {
       await preparePage(page, url);
       const text = await page.evaluate(() => document.body.innerText);

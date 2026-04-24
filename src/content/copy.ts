@@ -104,6 +104,8 @@ export const clusters = {
 type ProjectEntry = {
   slug: string;
   cluster: 'perception' | 'planning' | 'human' | 'systems';
+  /** Short list of tech nouns, 2–5 items. Not translated (proper nouns). */
+  tech: string[];
   en: { title: string; status: string; body: string; bodyLong: string };
   fr: { title: string; status: string; body: string; bodyLong: string };
 };
@@ -112,6 +114,7 @@ export const projects: Record<string, ProjectEntry> = {
   robotclaw: {
     slug: 'robotclaw',
     cluster: 'planning',
+    tech: ['Ollama (qwen2.5:7b)', 'MQTT', 'ChromaDB', 'SQLite', 'Flutter'],
     en: {
       title: 'RobotClaw',
       status: 'open-source soon',
@@ -132,6 +135,7 @@ export const projects: Record<string, ProjectEntry> = {
   openclaw: {
     slug: 'openclaw',
     cluster: 'systems',
+    tech: ['TypeScript', 'Node.js', 'MCP'],
     en: {
       title: 'OpenClaw',
       status: 'in production',
@@ -152,6 +156,7 @@ export const projects: Record<string, ProjectEntry> = {
   'drone-stack': {
     slug: 'drone-stack',
     cluster: 'perception',
+    tech: ['Jetson Orin', 'PX4', 'edge AI', 'VIO'],
     en: {
       title: 'Drone autonomy stack',
       status: 'in flight',
@@ -172,6 +177,7 @@ export const projects: Record<string, ProjectEntry> = {
   'noovelia-lattice': {
     slug: 'noovelia-lattice',
     cluster: 'planning',
+    tech: ['4D lattice planner', 'nonlinear MPC', 'behavior trees', 'YOLOv8', 'Redis Queue'],
     en: {
       title: 'Noovelia lattice planner',
       status: 'shipped',
@@ -192,6 +198,7 @@ export const projects: Record<string, ProjectEntry> = {
   'odu-slam': {
     slug: 'odu-slam',
     cluster: 'perception',
+    tech: ['SLAM', 'lidar', 'ROS 2'],
     en: {
       title: 'Odu SLAM',
       status: 'in production',

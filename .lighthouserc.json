@@ -5,9 +5,10 @@
       "url": [
         "http://127.0.0.1:4321/",
         "http://127.0.0.1:4321/work/",
+        "http://127.0.0.1:4321/research/",
         "http://127.0.0.1:4321/about/",
         "http://127.0.0.1:4321/fr/",
-        "http://127.0.0.1:4321/fr/a-propos/"
+        "http://127.0.0.1:4321/fr/recherche/"
       ],
       "numberOfRuns": 2,
       "settings": {

@@ -7,7 +7,7 @@ export type Locale = 'en' | 'fr';
 
 export const htmlLang: Record<Locale, string> = {
   en: 'en',
-  fr: 'fr-CA', // phase-2-revisions §5 — narration fidelity
+  fr: 'fr-CA',
 };
 
 export const ogLocale: Record<Locale, string> = {
@@ -28,7 +28,7 @@ export function siblingUrl(current: Locale, path: string): string {
   const slugMap: Record<string, { en: string; fr: string }> = {
     '': { en: '', fr: '' },
     'work/': { en: 'work/', fr: 'travaux/' },
-    'writing/': { en: 'writing/', fr: 'ecrits/' },
+    'research/': { en: 'research/', fr: 'recherche/' },
     'about/': { en: 'about/', fr: 'a-propos/' },
   };
   // Reverse lookup: if `path` is a FR slug, find the canonical key.
@@ -46,73 +46,37 @@ export function siblingUrl(current: Locale, path: string): string {
 export const ui = {
   en: {
     skipToMain: 'Skip to main content',
-    skipToSectionNav: 'Skip to section navigation',
     primaryNav: 'Primary',
     footerNav: 'Footer',
-    sectionNav: 'Sections',
     navHome: 'Home',
     navWork: 'Work',
-    navWriting: 'Writing',
+    navResearch: 'Research',
     navAbout: 'About',
-    langSwitch: 'Français',
+    langSwitch: 'FR',
     langSwitchAriaLabel: 'Switch language to Français',
-    pauseAmbient: 'Pause ambient motion',
-    resumeAmbient: 'Resume ambient motion',
-    openRepo: 'Open the repo',
-    seeWork: 'See the work',
-    readNotes: 'Read the notes',
     writeToMe: 'Write to me',
-    readSource: 'Read the source',
     copyright: '© Cyrille Tabe',
-    builtOn: 'Built on Astro, hosted on GitHub Pages, self-hosted everything.',
-    loading: 'Loading',
-    ready: 'Ready',
+    builtOn: 'Built on Astro. Hosted on GitHub Pages.',
     notFoundTitle: 'Route not in plan',
     notFoundBody: "This page doesn't exist — or it did, and I moved it. Head back to the start.",
     backToStart: 'Back to the top',
-    notes: {
-      none: 'Nothing published here yet. I write slowly on purpose.',
-    },
-    sensorBoot: {
-      stage1: 'Initializing sensors…',
-      stage2: 'Converging belief state…',
-      stage3: 'Ready.',
-    },
   },
   fr: {
     skipToMain: 'Aller au contenu principal',
-    skipToSectionNav: 'Aller à la navigation des sections',
     primaryNav: 'Principal',
     footerNav: 'Pied de page',
-    sectionNav: 'Sections',
     navHome: 'Accueil',
     navWork: 'Travaux',
-    navWriting: 'Écrits',
+    navResearch: 'Recherche',
     navAbout: 'À propos',
-    langSwitch: 'English',
+    langSwitch: 'EN',
     langSwitchAriaLabel: 'Switch language to English',
-    pauseAmbient: "Pauser l'animation ambiante",
-    resumeAmbient: "Reprendre l'animation ambiante",
-    openRepo: 'Ouvrir le dépôt',
-    seeWork: 'Voir les travaux',
-    readNotes: 'Lire les notes',
     writeToMe: 'Écrivez-moi',
-    readSource: 'Lire la source',
     copyright: '© Cyrille Tabe',
-    builtOn: 'Fait avec Astro, hébergé sur GitHub Pages, tout auto-hébergé.',
-    loading: 'Chargement',
-    ready: 'Prêt',
-    notFoundTitle: "Route hors plan",
+    builtOn: 'Fait avec Astro. Hébergé sur GitHub Pages.',
+    notFoundTitle: 'Route hors plan',
     notFoundBody: "Cette page n'existe pas — ou elle existait, et je l'ai déplacée. Retour au départ.",
     backToStart: 'Retour au début',
-    notes: {
-      none: "Rien de publié ici pour l'instant. J'écris lentement, par choix.",
-    },
-    sensorBoot: {
-      stage1: 'Initialisation des capteurs…',
-      stage2: 'Convergence de l’état de croyance…',
-      stage3: 'Prêt.',
-    },
   },
 } as const;
 
@@ -130,10 +94,10 @@ export const pageMeta = {
       description:
         'Five systems shipped in the physical world — RobotClaw, OpenClaw, a drone autonomy stack, a 4D lattice planner at Noovelia, and SLAM at Odu.',
     },
-    writing: {
-      title: 'Writing — Cyrille Tabe',
+    research: {
+      title: 'Research — Cyrille Tabe',
       description:
-        'Notes on belief-state systems, planning under uncertainty, and the robots Cyrille ships.',
+        'Four research clusters: perception and spatial intelligence, planning and decision under uncertainty, human understanding, systems and infrastructure.',
     },
     about: {
       title: 'About — Cyrille Tabe',
@@ -156,9 +120,10 @@ export const pageMeta = {
       description:
         'Cinq systèmes livrés dans le monde réel — RobotClaw, OpenClaw, une pile d’autonomie drone, un planificateur 4D chez Noovelia, du SLAM chez Odu.',
     },
-    writing: {
-      title: 'Écrits — Cyrille Tabe',
-      description: "Notes sur les états de croyance, la planification sous incertitude, et les robots que Cyrille livre.",
+    research: {
+      title: 'Recherche — Cyrille Tabe',
+      description:
+        'Quatre clusters de recherche : perception et intelligence spatiale, planification et décision sous incertitude, compréhension humaine, systèmes et infrastructure.',
     },
     about: {
       title: 'À propos — Cyrille Tabe',

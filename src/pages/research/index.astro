@@ -1,0 +1,107 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { pageMeta } from '@/i18n/strings';
+import { clusters, frontierBridges } from '@/content/copy';
+
+const locale = 'en' as const;
+const meta = pageMeta[locale].research;
+const c = clusters;
+---
+
+<BaseLayout locale={locale} title={meta.title} description={meta.description} pathKey="research/">
+  <div class="page">
+    <header class="page-header">
+      <h1 class="page-title">Research</h1>
+      <p class="prose t-reading">
+        Four clusters. The intellectual spine under the work.
+      </p>
+    </header>
+
+    <div class="clusters">
+      <section class="cluster" aria-labelledby="perception-title">
+        <h2 id="perception-title" class="cluster__title">{c.perception[locale].title}</h2>
+        <p class="prose t-reading">{c.perception[locale].body}</p>
+      </section>
+      <section class="cluster" aria-labelledby="planning-title">
+        <h2 id="planning-title" class="cluster__title">{c.planning[locale].title}</h2>
+        <p class="prose t-reading">{c.planning[locale].body}</p>
+      </section>
+      <section class="cluster" aria-labelledby="human-title">
+        <h2 id="human-title" class="cluster__title">{c.human[locale].title}</h2>
+        <p class="prose t-reading">{c.human[locale].body}</p>
+      </section>
+      <section class="cluster" aria-labelledby="systems-title">
+        <h2 id="systems-title" class="cluster__title">{c.systems[locale].title}</h2>
+        <p class="prose t-reading">{c.systems[locale].body}</p>
+      </section>
+    </div>
+
+    <section class="frontier" aria-labelledby="frontier-title">
+      <h2 id="frontier-title" class="cluster__title">What I'm pulling in</h2>
+      <ul class="frontier__list">
+        {frontierBridges[locale].map((bridge) => <li>{bridge}</li>)}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: 720px;
+    margin-inline: auto;
+    padding: var(--space-5) 1rem var(--space-7);
+  }
+  @media (min-width: 768px) {
+    .page { padding-inline: 2rem; }
+  }
+
+  .page-header { padding-block: var(--space-4) var(--space-5); }
+  .page-title {
+    font-family: var(--font-body);
+    font-size: 2rem;
+    font-weight: var(--fw-semibold);
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-bottom: var(--space-3);
+  }
+
+  .clusters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+  .cluster {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--surface-2);
+  }
+  .cluster__title {
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    font-weight: var(--fw-semibold);
+    color: var(--ink);
+    margin-bottom: var(--space-3);
+  }
+
+  .frontier {
+    padding-top: var(--space-5);
+    margin-top: var(--space-5);
+    border-top: 1px solid var(--surface-2);
+  }
+  .frontier__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    letter-spacing: var(--tr-mono);
+    color: var(--ink);
+  }
+  .frontier__list li {
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--surface-2);
+    border-radius: var(--radius-sm);
+  }
+</style>

@@ -1,13 +1,11 @@
 ---
 /**
- * Nav.astro — primary behavior-tree nav.
- * Static list of leaves; keyboard-first (Tab through, Agent 8 §3.2).
- * The SVG tree skeleton is rendered here; Agent 10 may replace with
- * an animated NavTree React island using the <slot /> target below.
+ * Nav.astro — minimal text header.
+ * Name on the left, four text links on the right, language toggle at the
+ * far right. Zero JS. Keyboard-accessible via plain <a>.
  */
 import { ui, localePrefix, type Locale } from '@/i18n/strings';
 import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
-import NavTree from '@/components/NavTree.tsx';
 
 export interface Props {
   locale: Locale;
@@ -17,66 +15,41 @@ const { locale, pathKey } = Astro.props;
 const t = ui[locale];
 const prefix = localePrefix(locale);
 
-type Leaf = { key: string; href: string; label: string; match: string[] };
-
 const workPath = locale === 'en' ? 'work/' : 'travaux/';
+const researchPath = locale === 'en' ? 'research/' : 'recherche/';
 const aboutPath = locale === 'en' ? 'about/' : 'a-propos/';
-// Writing leaf is hidden until at least one post lands (Agent 4 §3.1).
 
-const leaves: Leaf[] = [
-  { key: 'home', href: prefix, label: t.navHome, match: [''] },
-  { key: 'work', href: `${prefix}${workPath}`, label: t.navWork, match: [workPath] },
-  // Writing leaf is PRUNED when no posts exist (handled at build time).
-  // Ship the leaf always for now; conditional write-up lives at the route.
-  { key: 'about', href: `${prefix}${aboutPath}`, label: t.navAbout, match: [aboutPath] },
+type Link = { key: string; href: string; label: string; match: string[] };
+
+const links: Link[] = [
+  { key: 'home',     href: prefix,                             label: t.navHome,     match: [''] },
+  { key: 'work',     href: `${prefix}${workPath}`,             label: t.navWork,     match: [workPath] },
+  { key: 'research', href: `${prefix}${researchPath}`,         label: t.navResearch, match: [researchPath] },
+  { key: 'about',    href: `${prefix}${aboutPath}`,            label: t.navAbout,    match: [aboutPath] },
 ];
-
-const activeIndex = leaves.findIndex((l) => l.match.includes(pathKey));
-const navLeaves = leaves.map((l, i) => ({
-  key: l.key,
-  href: l.href,
-  label: l.label,
-  active: i === activeIndex,
-}));
 ---
 
 <nav class="primary-nav" aria-label={t.primaryNav}>
-  <a class="primary-nav__root" href={prefix} aria-label="Site root">
-    <!-- BT root node: tiny sensor-calibration glyph (Agent 3 §7.2) -->
-    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
-      <circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="1.25"/>
-      <line x1="10" y1="2" x2="10" y2="6" stroke="currentColor" stroke-width="1.25"/>
-      <line x1="10" y1="14" x2="10" y2="18" stroke="currentColor" stroke-width="1.25"/>
-      <line x1="2" y1="10" x2="6" y2="10" stroke="currentColor" stroke-width="1.25"/>
-      <line x1="14" y1="10" x2="18" y2="10" stroke="currentColor" stroke-width="1.25"/>
-    </svg>
-    <span class="sr-only">site/</span>
+  <a class="primary-nav__brand" href={prefix} aria-label="Cyrille Tabe — home">
+    cyrille tabe
   </a>
 
-  {/* SSR skeleton: a semantic list, hidden after hydration by the
-      island. Accessible to screen readers and no-JS users. */}
-  <ul class="primary-nav__leaves primary-nav__leaves--ssr">
-    {leaves.map((leaf) => {
-      const isActive = leaf.match.includes(pathKey);
+  <ul class="primary-nav__links">
+    {links.slice(1).map((link) => {
+      const isActive = link.match.includes(pathKey);
       return (
         <li>
           <a
-            href={leaf.href}
-            class={`primary-nav__leaf ${isActive ? 'is-active' : ''}`}
+            href={link.href}
+            class={`primary-nav__link ${isActive ? 'is-active' : ''}`}
             aria-current={isActive ? 'page' : undefined}
           >
-            <span class="primary-nav__tick" aria-hidden="true"></span>
-            {leaf.label}
+            {link.label}
           </a>
         </li>
       );
     })}
   </ul>
-
-  {/* Island: BT-tree illustration with tick propagation. */}
-  <div class="primary-nav__tree">
-    <NavTree client:idle leaves={navLeaves} activeIndex={activeIndex} />
-  </div>
 
   <div class="primary-nav__tail">
     <LanguageSwitcher locale={locale} pathKey={pathKey} />
@@ -89,57 +62,59 @@ const navLeaves = leaves.map((l, i) => ({
     align-items: center;
     gap: var(--space-4);
     padding-inline: 1rem;
-    max-width: 1280px;
+    max-width: 960px;
     margin-inline: auto;
+    flex-wrap: wrap;
   }
   @media (min-width: 768px) { .primary-nav { padding-inline: 2rem; } }
-  @media (min-width: 1024px) { .primary-nav { padding-inline: 3rem; } }
-  @media (min-width: 1440px) { .primary-nav { padding-inline: 5rem; } }
 
-  .primary-nav__root {
-    color: var(--ink-muted);
-    transition: color var(--dur-base) var(--ease-default);
-  }
-  .primary-nav__root:hover, .primary-nav__root:focus-visible { color: var(--ink); }
-
-  .primary-nav__leaves {
-    list-style: none;
-    padding: 0; margin: 0;
-    display: flex;
-    gap: var(--space-4);
-  }
-  .primary-nav__leaf {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
+  .primary-nav__brand {
     font-family: var(--font-mono);
     font-size: var(--fs-mono);
     letter-spacing: var(--tr-mono);
-    font-weight: var(--fw-medium);
-    color: var(--ink-muted);
+    color: var(--ink);
     text-decoration: none;
-    text-transform: none;
+    transition: color 120ms ease;
   }
-  .primary-nav__leaf:hover, .primary-nav__leaf:focus-visible { color: var(--ink); }
-  .primary-nav__leaf.is-active {
+  .primary-nav__brand:hover,
+  .primary-nav__brand:focus-visible {
     color: var(--primary);
   }
-  .primary-nav__tick {
-    display: inline-block;
-    width: 6px; height: 6px;
-    border: 1px solid currentColor;
-    transform: rotate(45deg);
-    transition: background-color var(--dur-base) var(--ease-system);
-  }
-  .primary-nav__leaf.is-active .primary-nav__tick {
-    background: var(--primary);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 30%, transparent);
+
+  .primary-nav__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
   }
 
-  .primary-nav__tail { margin-inline-start: auto; }
+  .primary-nav__link {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    letter-spacing: var(--tr-mono);
+    color: var(--ink-muted);
+    text-decoration: none;
+    transition: color 120ms ease;
+  }
+  .primary-nav__link:hover,
+  .primary-nav__link:focus-visible {
+    color: var(--ink);
+  }
+  .primary-nav__link.is-active {
+    color: var(--primary);
+  }
 
-  /* When the NavTree island hydrates, we hide the SSR list to avoid
-     double-rendering. A visible:has() check keeps it visible if the
-     island fails to mount. */
-  .primary-nav:has(.nav-tree) .primary-nav__leaves--ssr { display: none; }
+  .primary-nav__tail {
+    margin-inline-start: auto;
+  }
+
+  @media (max-width: 480px) {
+    .primary-nav__brand {
+      /* Hide the name on very narrow screens to keep the links + lang
+         toggle on a single row. */
+      display: none;
+    }
+  }
 </style>

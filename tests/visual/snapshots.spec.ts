@@ -85,17 +85,6 @@ for (const lang of LANGS) {
         );
         await preparePage(page, url, { reducedMotion: true, theme: 'dark' });
 
-        // Extra: ellipses should be in their static terminal pose and
-        // no hero animation should be running. We don't assert pixel
-        // contents of the hero (masked); we only assert the region
-        // *exists* in the DOM. (Under reduced motion the ambient SLAM
-        // layer is `display:none`, which is correct behavior — so we
-        // cannot demand `toBeVisible` here.)
-        const heroCount = await page
-          .locator('.hero-scene, .hero-scene-wrap')
-          .count();
-        expect(heroCount).toBeGreaterThanOrEqual(0); // tautological but documents the check
-
         await expect(page).toHaveScreenshot(
           `${snapBase}-reduced-${testInfo.project.name}.png`,
           {

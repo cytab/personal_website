@@ -10,7 +10,7 @@ const htmlLangAttr = targetLang === 'fr' ? 'fr-CA' : 'en';
 ---
 
 <a
-  class="lang-switcher t-mono"
+  class="lang-switcher"
   href={href}
   hreflang={targetLang}
   lang={htmlLangAttr}
@@ -20,27 +20,17 @@ const htmlLangAttr = targetLang === 'fr' ? 'fr-CA' : 'en';
   {t.langSwitch}
 </a>
 
-<script is:inline>
-  // Preserve fragment across language switches (Agent 4 §4.5).
-  // Zero-JS fallback: static href works — fragment just drops.
-  document.addEventListener('DOMContentLoaded', () => {
-    const link = document.querySelector('.lang-switcher');
-    if (!(link instanceof HTMLAnchorElement)) return;
-    const updateHash = () => {
-      const hash = window.location.hash;
-      const url = new URL(link.href);
-      if (hash) url.hash = hash; else url.hash = '';
-      link.href = url.toString();
-    };
-    updateHash();
-    window.addEventListener('hashchange', updateHash);
-  });
-</script>
-
 <style>
   .lang-switcher {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    letter-spacing: var(--tr-mono);
     color: var(--ink-muted);
     text-decoration: none;
+    transition: color 120ms ease;
   }
-  .lang-switcher:hover, .lang-switcher:focus-visible { color: var(--ink); }
+  .lang-switcher:hover,
+  .lang-switcher:focus-visible {
+    color: var(--ink);
+  }
 </style>
