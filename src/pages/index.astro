@@ -24,6 +24,7 @@ const featuredSlugs = ['robotclaw', 'noovelia-lattice', 'odu-slam'] as const;
   pathKey=""
   personSchema
 >
+  <div class="scroll-progress" aria-hidden="true"><span class="scroll-progress__bar"></span></div>
   <div class="page">
     <section class="hero" aria-label="Hero">
       <div class="hero__stage">
@@ -73,7 +74,76 @@ const featuredSlugs = ['robotclaw', 'noovelia-lattice', 'odu-slam'] as const;
   </div>
 </BaseLayout>
 
+<!--
+  Scroll-progress polyfill — ~200 B gzipped. Fires once on load and on
+  scroll. Skips the rAF-driven path when scroll-timeline is supported
+  (Chromium/Edge/Firefox 128+), leaving the pure-CSS animation in charge.
+-->
+<script is:inline>
+  (function () {
+    var el = document.querySelector('.scroll-progress__bar');
+    if (!el) return;
+    if (typeof CSS !== 'undefined' && CSS.supports && CSS.supports('animation-timeline:scroll()')) {
+      return;
+    }
+    var ticking = false;
+    function update() {
+      var h = document.documentElement;
+      var max = (h.scrollHeight - h.clientHeight) || 1;
+      var pct = Math.max(0, Math.min(1, (h.scrollTop || document.body.scrollTop) / max));
+      el.style.transform = 'scaleX(' + pct + ')';
+      ticking = false;
+    }
+    function onScroll() {
+      if (!ticking) { requestAnimationFrame(update); ticking = true; }
+    }
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+  })();
+</script>
+
 <style>
+  /* Route-scoped scroll progress bar — 2px of Signal Amber, home only.
+     Uses CSS scroll-timeline when supported; falls back to the tiny
+     inline polyfill above. */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 50;
+    pointer-events: none;
+    background: transparent;
+  }
+  .scroll-progress__bar {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--primary);
+    transform-origin: left center;
+    transform: scaleX(0);
+    will-change: transform;
+  }
+  @supports (animation-timeline: scroll()) {
+    .scroll-progress__bar {
+      animation: scroll-progress-fill linear both;
+      animation-timeline: scroll(root);
+    }
+    @keyframes scroll-progress-fill {
+      to { transform: scaleX(1); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-progress__bar {
+      /* Keep the indicator functional but static: show it filled to
+         the current position via the polyfill or hide it. Hiding is
+         simpler and cleaner for reduced-motion. */
+      display: none;
+    }
+  }
+
   .page {
     max-width: 1040px;
     margin-inline: auto;

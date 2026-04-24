@@ -1,0 +1,300 @@
+---
+/**
+ * ResearchMotifs.astro — four inline animated SVG motifs, one per
+ * research cluster. Pure SVG + CSS: no JS, no WebGL. Each is tiny
+ * (< 2 KB gzip). All are decorative (aria-hidden); the cluster
+ * text carries the semantic load.
+ *
+ * Under prefers-reduced-motion, animations freeze on a "final frame"
+ * look via animation-play-state + static overrides.
+ */
+export interface Props {
+  kind: 'perception' | 'planning' | 'human' | 'systems';
+}
+const { kind } = Astro.props;
+---
+
+{kind === 'perception' && (
+  <svg class="motif motif--perception" viewBox="0 0 320 100" aria-hidden="true" focusable="false">
+    {/* 16×10 occupancy grid reveal */}
+    {Array.from({ length: 10 }).map((_, row) =>
+      Array.from({ length: 16 }).map((_, col) => {
+        const i = row * 16 + col;
+        // Deterministic "state" per cell: ~30% occupied, ~55% free, ~15% unknown
+        const kind = (i * 17 + 11) % 7;
+        const state = kind < 2 ? 'occ' : kind < 6 ? 'free' : 'unk';
+        const delay = ((col * 10 + row) * 25) % 1600;
+        return (
+          <rect
+            x={col * 20 + 1}
+            y={row * 10 + 1}
+            width={18}
+            height={8}
+            class={`cell cell--${state}`}
+            style={`animation-delay: ${delay}ms`}
+          />
+        );
+      })
+    )}
+  </svg>
+)}
+
+{kind === 'planning' && (
+  <svg class="motif motif--planning" viewBox="0 0 320 100" aria-hidden="true" focusable="false">
+    {/* MCTS tree — one root, three children, seven grandchildren, leaves */}
+    <g class="edges">
+      <line x1="160" y1="14" x2="60"  y2="42" class="edge" style="animation-delay:0ms"/>
+      <line x1="160" y1="14" x2="160" y2="42" class="edge edge--best" style="animation-delay:150ms"/>
+      <line x1="160" y1="14" x2="260" y2="42" class="edge" style="animation-delay:300ms"/>
+      <line x1="60"  y1="42" x2="30"  y2="68" class="edge" style="animation-delay:450ms"/>
+      <line x1="60"  y1="42" x2="90"  y2="68" class="edge" style="animation-delay:550ms"/>
+      <line x1="160" y1="42" x2="130" y2="68" class="edge" style="animation-delay:650ms"/>
+      <line x1="160" y1="42" x2="190" y2="68" class="edge edge--best" style="animation-delay:750ms"/>
+      <line x1="260" y1="42" x2="230" y2="68" class="edge" style="animation-delay:850ms"/>
+      <line x1="260" y1="42" x2="290" y2="68" class="edge" style="animation-delay:950ms"/>
+      <line x1="190" y1="68" x2="180" y2="92" class="edge edge--best" style="animation-delay:1050ms"/>
+      <line x1="190" y1="68" x2="210" y2="92" class="edge" style="animation-delay:1150ms"/>
+    </g>
+    <g class="nodes">
+      <circle cx="160" cy="14" r="4" class="node node--root"/>
+      <circle cx="60"  cy="42" r="3" class="node" style="animation-delay:0ms"/>
+      <circle cx="160" cy="42" r="3" class="node node--best" style="animation-delay:150ms"/>
+      <circle cx="260" cy="42" r="3" class="node" style="animation-delay:300ms"/>
+      <circle cx="30"  cy="68" r="2.5" class="node" style="animation-delay:450ms"/>
+      <circle cx="90"  cy="68" r="2.5" class="node" style="animation-delay:550ms"/>
+      <circle cx="130" cy="68" r="2.5" class="node" style="animation-delay:650ms"/>
+      <circle cx="190" cy="68" r="2.5" class="node node--best" style="animation-delay:750ms"/>
+      <circle cx="230" cy="68" r="2.5" class="node" style="animation-delay:850ms"/>
+      <circle cx="290" cy="68" r="2.5" class="node" style="animation-delay:950ms"/>
+      <circle cx="180" cy="92" r="2" class="node node--best" style="animation-delay:1050ms"/>
+      <circle cx="210" cy="92" r="2" class="node" style="animation-delay:1150ms"/>
+    </g>
+  </svg>
+)}
+
+{kind === 'human' && (
+  <svg class="motif motif--human" viewBox="0 0 320 100" aria-hidden="true" focusable="false">
+    {/* Nested circles — theory of mind; a traced intent particle */}
+    <g transform="translate(160 50)">
+      <circle r="40" class="ring ring--outer"/>
+      <circle r="26" class="ring ring--mid"/>
+      <circle r="14" class="ring ring--inner"/>
+      <circle r="3" class="ring-dot">
+        <animateMotion dur="4.5s" repeatCount="indefinite" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.6 1"
+                       path="M 0,-40 C 20,-40 40,-20 40,0 C 40,20 20,40 0,40 C -20,40 -40,20 -40,0 C -40,-20 -20,-40 0,-40 Z" />
+      </circle>
+      <circle r="2" class="intent">
+        <animateMotion dur="3.2s" repeatCount="indefinite"
+                       path="M -38,0 C -20,-5 -10,0 0,0" />
+      </circle>
+    </g>
+    {/* Small tick-marks along the outer ring to echo instrument dials */}
+    {Array.from({ length: 24 }).map((_, i) => {
+      const a = (i / 24) * Math.PI * 2;
+      const r0 = 42;
+      const r1 = 46;
+      const x1 = 160 + Math.cos(a) * r0;
+      const y1 = 50 + Math.sin(a) * r0;
+      const x2 = 160 + Math.cos(a) * r1;
+      const y2 = 50 + Math.sin(a) * r1;
+      return <line x1={x1} y1={y1} x2={x2} y2={y2} class="tick"/>;
+    })}
+  </svg>
+)}
+
+{kind === 'systems' && (
+  <svg class="motif motif--systems" viewBox="0 0 320 100" aria-hidden="true" focusable="false">
+    {/* Horizontal bus with packets sliding */}
+    <line x1="20" y1="50" x2="300" y2="50" class="bus"/>
+    {/* Nodes above and below */}
+    <g class="nodes">
+      <rect x="60"  y="16" width="12" height="12" class="nbox"/>
+      <rect x="130" y="16" width="12" height="12" class="nbox"/>
+      <rect x="200" y="16" width="12" height="12" class="nbox"/>
+      <rect x="80"  y="72" width="12" height="12" class="nbox"/>
+      <rect x="160" y="72" width="12" height="12" class="nbox"/>
+      <rect x="240" y="72" width="12" height="12" class="nbox"/>
+      <line x1="66"  y1="28" x2="66"  y2="50" class="stem"/>
+      <line x1="136" y1="28" x2="136" y2="50" class="stem"/>
+      <line x1="206" y1="28" x2="206" y2="50" class="stem"/>
+      <line x1="86"  y1="72" x2="86"  y2="50" class="stem"/>
+      <line x1="166" y1="72" x2="166" y2="50" class="stem"/>
+      <line x1="246" y1="72" x2="246" y2="50" class="stem"/>
+    </g>
+    {/* Packets — cyan requests slide left→right, amber responses right→left */}
+    <g class="packets">
+      <rect width="6" height="6" y="47" class="pkt pkt--req" style="animation-delay:0ms"/>
+      <rect width="6" height="6" y="47" class="pkt pkt--req" style="animation-delay:700ms"/>
+      <rect width="6" height="6" y="47" class="pkt pkt--req" style="animation-delay:1400ms"/>
+      <rect width="6" height="6" y="47" class="pkt pkt--res" style="animation-delay:400ms"/>
+      <rect width="6" height="6" y="47" class="pkt pkt--res" style="animation-delay:1100ms"/>
+    </g>
+  </svg>
+)}
+
+<style>
+  .motif {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: 100px;
+    margin-block-end: var(--space-3);
+  }
+
+  /* -------- perception: occupancy grid reveal -------- */
+  .motif--perception .cell {
+    fill: #1F2427;
+    opacity: 0;
+    animation: cell-reveal 4s infinite cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .motif--perception .cell--free {
+    fill: #E6E1D6;
+    /* Composite opacity via animation end state */
+  }
+  .motif--perception .cell--occ {
+    fill: #F3A03B;
+  }
+  .motif--perception .cell--unk {
+    fill: #15191B;
+    stroke: #1F2427;
+    stroke-width: 0.5;
+  }
+  @keyframes cell-reveal {
+    0%, 10%   { opacity: 0; }
+    25%       { opacity: 0.4; }
+    45%, 90%  { opacity: 0.35; }
+    100%      { opacity: 0; }
+  }
+  .motif--perception .cell--free { animation-name: cell-reveal-free; }
+  @keyframes cell-reveal-free {
+    0%, 10%   { opacity: 0; }
+    25%       { opacity: 0.4; }
+    45%, 90%  { opacity: 0.3; }
+    100%      { opacity: 0; }
+  }
+  .motif--perception .cell--occ { animation-name: cell-reveal-occ; }
+  @keyframes cell-reveal-occ {
+    0%, 10%   { opacity: 0; }
+    30%       { opacity: 0.9; }
+    45%, 90%  { opacity: 0.75; }
+    100%      { opacity: 0; }
+  }
+
+  /* -------- planning: MCTS tree -------- */
+  .motif--planning .edge {
+    stroke: #1F2427;
+    stroke-width: 1;
+    opacity: 0;
+    animation: edge-expand 4.2s infinite cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .motif--planning .edge--best {
+    stroke: #F3A03B;
+    stroke-width: 1.25;
+  }
+  @keyframes edge-expand {
+    0%, 10%   { opacity: 0; }
+    30%, 80%  { opacity: 0.75; }
+    100%      { opacity: 0; }
+  }
+  .motif--planning .node {
+    fill: #15191B;
+    stroke: #8E8A82;
+    stroke-width: 0.75;
+    opacity: 0;
+    animation: node-expand 4.2s infinite cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .motif--planning .node--root {
+    fill: #E6E1D6;
+    stroke: #E6E1D6;
+    opacity: 1;
+    animation: node-pulse 2.4s infinite ease-in-out;
+  }
+  .motif--planning .node--best {
+    fill: #F3A03B;
+    stroke: #F3A03B;
+  }
+  @keyframes node-expand {
+    0%, 10%   { opacity: 0; transform: scale(0.3); }
+    30%       { opacity: 1; transform: scale(1.15); }
+    45%, 80%  { opacity: 1; transform: scale(1); }
+    100%      { opacity: 0; transform: scale(0.3); }
+  }
+  .motif--planning .node { transform-origin: center; transform-box: fill-box; }
+  @keyframes node-pulse {
+    0%, 100% { opacity: 0.6; }
+    50%      { opacity: 1; }
+  }
+
+  /* -------- human: concentric rings with orbiting dot -------- */
+  .motif--human .ring {
+    fill: none;
+    stroke: #8E8A82;
+    stroke-width: 0.75;
+    opacity: 0.7;
+  }
+  .motif--human .ring--outer { animation: ring-breathe 4.8s infinite ease-in-out; }
+  .motif--human .ring--mid   { animation: ring-breathe 4.8s infinite ease-in-out -0.8s; }
+  .motif--human .ring--inner {
+    animation: ring-breathe 4.8s infinite ease-in-out -1.6s;
+    stroke: #F3A03B;
+  }
+  @keyframes ring-breathe {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1; }
+  }
+  .motif--human .ring-dot { fill: #62E0C8; }
+  .motif--human .intent   { fill: #F3A03B; opacity: 0.9; }
+  .motif--human .tick {
+    stroke: #1F2427;
+    stroke-width: 0.75;
+  }
+
+  /* -------- systems: message bus + packets -------- */
+  .motif--systems .bus {
+    stroke: #1F2427;
+    stroke-width: 1.5;
+    stroke-dasharray: 3 4;
+  }
+  .motif--systems .nbox {
+    fill: #15191B;
+    stroke: #8E8A82;
+    stroke-width: 0.75;
+  }
+  .motif--systems .stem {
+    stroke: #1F2427;
+    stroke-width: 0.75;
+  }
+  .motif--systems .pkt {
+    rx: 1;
+    ry: 1;
+    animation: packet-fly 2.8s infinite linear;
+  }
+  .motif--systems .pkt--req { fill: #62E0C8; }
+  .motif--systems .pkt--res { fill: #F3A03B; animation-direction: reverse; }
+  @keyframes packet-fly {
+    0%   { transform: translateX(20px); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateX(300px); opacity: 0; }
+  }
+
+  /* Reduced motion: freeze on a tuned "final" look. */
+  @media (prefers-reduced-motion: reduce) {
+    .motif *,
+    .motif *::before,
+    .motif *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    .motif--perception .cell--free { opacity: 0.3; }
+    .motif--perception .cell--occ  { opacity: 0.75; }
+    .motif--perception .cell--unk  { opacity: 0.2; }
+    .motif--planning .edge         { opacity: 0.5; }
+    .motif--planning .edge--best   { opacity: 1; }
+    .motif--planning .node         { opacity: 1; transform: scale(1); }
+    .motif--planning .node--best   { opacity: 1; }
+    .motif--human .ring            { opacity: 0.7; }
+    .motif--human .ring--inner     { opacity: 1; }
+    .motif--systems .pkt           { opacity: 0.9; transform: translateX(160px); }
+  }
+</style>

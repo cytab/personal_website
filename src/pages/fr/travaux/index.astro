@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { pageMeta } from '@/i18n/strings';
 import { projects, projectOrder } from '@/content/copy';
+import WorkGlyph from '@/components/WorkGlyph.astro';
 
 const locale = 'fr' as const;
 const meta = pageMeta[locale].work;
@@ -30,14 +31,21 @@ const meta = pageMeta[locale].work;
         const l = p[locale];
         return (
           <section id={p.slug} class="work__entry" aria-labelledby={`${p.slug}-title`}>
-            <header class="work__header">
-              <h2 id={`${p.slug}-title`} class="work__title">{l.title}</h2>
-              <p class="work__status">{l.status}</p>
-            </header>
-            <p class="prose t-reading">{l.bodyLong}</p>
-            <ul class="work__tech" aria-label="Tech">
-              {p.tech.map((item) => <li>{item}</li>)}
-            </ul>
+            <div class="work__grid">
+              <div class="work__main">
+                <header class="work__header">
+                  <h2 id={`${p.slug}-title`} class="work__title">{l.title}</h2>
+                  <p class="work__status">{l.status}</p>
+                </header>
+                <p class="prose t-reading">{l.bodyLong}</p>
+                <ul class="work__tech" aria-label="Tech">
+                  {p.tech.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+              <aside class="work__glyph" aria-hidden="true">
+                <WorkGlyph slug={p.slug as any} />
+              </aside>
+            </div>
           </section>
         );
       })}
@@ -91,6 +99,30 @@ const meta = pageMeta[locale].work;
     padding-block: var(--space-5);
     border-top: 1px solid var(--surface-2);
     scroll-margin-top: 4rem;
+  }
+  .work__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  @media (min-width: 768px) {
+    .work__grid {
+      grid-template-columns: minmax(0, 1fr) 120px;
+      gap: var(--space-4);
+      align-items: start;
+    }
+  }
+  .work__main { min-width: 0; }
+  .work__glyph {
+    display: flex;
+    justify-content: flex-start;
+    padding: var(--space-2);
+    border: 1px solid var(--surface-2);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--surface-1) 50%, transparent);
+  }
+  @media (min-width: 768px) {
+    .work__glyph { order: 2; align-self: start; position: sticky; top: 4.5rem; }
   }
   .work__header {
     margin-bottom: var(--space-3);

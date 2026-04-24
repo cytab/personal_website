@@ -22,15 +22,38 @@ const htmlLangAttr = targetLang === 'fr' ? 'fr-CA' : 'en';
 
 <style>
   .lang-switcher {
+    position: relative;
     font-family: var(--font-mono);
     font-size: var(--fs-mono);
     letter-spacing: var(--tr-mono);
     color: var(--ink-muted);
     text-decoration: none;
-    transition: color 120ms ease;
+    padding-block: 2px;
+    transition: color 160ms var(--ease-system);
+  }
+  .lang-switcher::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1.5px;
+    background: var(--ink-muted);
+    border-radius: 1px;
+    transform: scaleX(0);
+    transform-origin: right center;
+    opacity: 0;
+    transition:
+      transform 240ms var(--ease-system),
+      opacity 180ms var(--ease-system);
   }
   .lang-switcher:hover,
   .lang-switcher:focus-visible {
     color: var(--ink);
+  }
+  .lang-switcher:hover::after,
+  .lang-switcher:focus-visible::after {
+    transform: scaleX(0.6);
+    opacity: 0.8;
   }
 </style>

@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { pageMeta } from '@/i18n/strings';
 import { clusters, frontierBridges } from '@/content/copy';
+import ResearchMotifs from '@/components/ResearchMotifs.astro';
 
 const locale = 'en' as const;
 const meta = pageMeta[locale].research;
@@ -19,18 +20,22 @@ const c = clusters;
 
     <div class="clusters">
       <section class="cluster" aria-labelledby="perception-title">
+        <ResearchMotifs kind="perception" />
         <h2 id="perception-title" class="cluster__title">{c.perception[locale].title}</h2>
         <p class="prose t-reading">{c.perception[locale].body}</p>
       </section>
       <section class="cluster" aria-labelledby="planning-title">
+        <ResearchMotifs kind="planning" />
         <h2 id="planning-title" class="cluster__title">{c.planning[locale].title}</h2>
         <p class="prose t-reading">{c.planning[locale].body}</p>
       </section>
       <section class="cluster" aria-labelledby="human-title">
+        <ResearchMotifs kind="human" />
         <h2 id="human-title" class="cluster__title">{c.human[locale].title}</h2>
         <p class="prose t-reading">{c.human[locale].body}</p>
       </section>
       <section class="cluster" aria-labelledby="systems-title">
+        <ResearchMotifs kind="systems" />
         <h2 id="systems-title" class="cluster__title">{c.systems[locale].title}</h2>
         <p class="prose t-reading">{c.systems[locale].body}</p>
       </section>

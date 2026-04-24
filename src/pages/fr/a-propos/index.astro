@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { pageMeta } from '@/i18n/strings';
 import { about } from '@/content/copy';
+import AboutSignature from '@/components/AboutSignature.astro';
 
 const locale = 'fr' as const;
 const meta = pageMeta[locale].about;
@@ -11,7 +12,10 @@ const copy = about[locale];
 <BaseLayout locale={locale} title={meta.title} description={meta.description} pathKey="a-propos/">
   <div class="page">
     <header class="page-header">
-      <h1 class="page-title">{copy.title}</h1>
+      <div class="page-header__row">
+        <AboutSignature />
+        <h1 class="page-title">{copy.title}</h1>
+      </div>
     </header>
 
     <p class="prose t-reading">{copy.body}</p>
@@ -21,14 +25,14 @@ const copy = about[locale];
       <p class="cv-card__body prose">{copy.cvBody}</p>
       <a
         class="cv-card__cta"
-        href="mailto:cyrilletabe@gmail.com?subject=Demande%20de%20CV"
+        href="mailto:cyrilletabepro@gmail.com?subject=Demande%20de%20CV"
       >
         {copy.cvCta} &nbsp;→
       </a>
     </aside>
 
     <p class="contact prose">
-      Contact : <a href="mailto:cyrilletabe@gmail.com">cyrilletabe@gmail.com</a>
+      Contact : <a href="mailto:cyrilletabepro@gmail.com">cyrilletabepro@gmail.com</a>
     </p>
   </div>
 </BaseLayout>
@@ -44,6 +48,11 @@ const copy = about[locale];
   }
 
   .page-header { padding-block: var(--space-4) var(--space-5); }
+  .page-header__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
   .page-title {
     font-family: var(--font-body);
     font-size: 2rem;

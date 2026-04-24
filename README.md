@@ -6,14 +6,21 @@ the whole site.
 
 ## Stack
 
-- **Astro 4** — zero JS on every page.
+- **Astro 4** — plain MPA navigation.
 - **TypeScript strict** — `astro check` gate on every build.
 - **Tailwind CSS** via `@astrojs/tailwind` (tokens in `src/styles/tokens.css`).
 - **MDX** integration kept available; no MDX content shipped yet.
 - **Self-hosted fonts** via `@fontsource/inter` and `@fontsource/jetbrains-mono`.
+- **React 18 + Three.js (r160)** — scoped to **the home hero only**
+  (`src/components/RobotArm/`) via `client:visible`. The React integration
+  is added back via `@astrojs/react`, but it does not hydrate on `/work/`,
+  `/research/`, `/about/` or their FR mirrors.
 
-No React. No WebGL. No Framer Motion. No View Transitions. No client JS
-on any route — every page is a plain MPA navigation.
+No Framer Motion. No R3F. No View Transitions. No global ambient layer.
+Every non-home route is zero-or-near-zero client JS — only a ~200 B inline
+scroll-progress polyfill script is inlined on `/` and `/fr/` (guarded by
+`CSS.supports('animation-timeline:scroll()')` and skipped on modern
+browsers). Work / Research / About micro-motion is pure SVG + CSS.
 
 ## Install & develop
 
@@ -84,10 +91,12 @@ npm run test:lighthouse  # Lighthouse CI, contract in .lighthouserc.json
 
 Current state on this commit (chromium-desktop):
 
-- 68/68 e2e + axe passing.
-- Lighthouse: **perf 100 / a11y 100 / best-practices 100 / seo 100** on
-  every route.
-- Zero JS on every page.
+- e2e + axe green; a hero-pause spec covers the WCAG 2.2.2 pause
+  toggle on the home WebGL canvas.
+- Lighthouse: **perf ≥ 95 / a11y 100 / best-practices ≥ 95 / seo 100**
+  across every route; `/` stays at 95+ even with the Three.js hero.
+- Zero client JS on `/work/`, `/research/`, `/about/` and their FR
+  mirrors. Home ships ~165 KB gzip of React + three.js (hero island).
 
 ## Content
 
