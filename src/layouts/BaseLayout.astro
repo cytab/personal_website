@@ -12,6 +12,8 @@ import '@fontsource/jetbrains-mono/latin-500.css';
 import { htmlLang, ogLocale, ui, siblingUrl, type Locale } from '@/i18n/strings';
 import Nav from '@/components/Nav.astro';
 import Footer from '@/components/Footer.astro';
+import CursorSpotlight from '@/components/CursorSpotlight.astro';
+import CommandPalette from '@/components/CommandPalette.astro';
 
 export interface Props {
   locale: Locale;
@@ -39,6 +41,9 @@ const {
 const t = ui[locale];
 const site = Astro.site?.href.replace(/\/$/, '') ?? '';
 const currentUrl = new URL(Astro.url.pathname, Astro.site || 'http://localhost').href;
+
+// Cursor spotlight is active on home + about only (content-sparse routes).
+const spotlightActive = pathKey === '' || pathKey === 'about/' || pathKey === 'a-propos/';
 
 // Sibling-locale path for hreflang / language switch
 const siblingPath = siblingUrl(locale, pathKey);
@@ -132,6 +137,8 @@ const personLd = {
   <body>
     <a class="skip-link" href="#main">{t.skipToMain}</a>
 
+    <CursorSpotlight active={spotlightActive} />
+
     <header class="site-header">
       <Nav locale={locale} pathKey={pathKey} />
     </header>
@@ -141,6 +148,8 @@ const personLd = {
     </main>
 
     <Footer locale={locale} pathKey={pathKey} />
+
+    <CommandPalette locale={locale} />
 
     <style>
       .site-header {

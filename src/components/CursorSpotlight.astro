@@ -1,0 +1,64 @@
+---
+/**
+ * CursorSpotlight.astro — a soft radial gradient that follows the cursor.
+ *
+ * Rendered only when `active` is true (home + about only). Off under
+ * `prefers-reduced-motion` and on coarse pointers. Uses two CSS custom
+ * properties (--cursor-x, --cursor-y) updated from a throttled rAF
+ * mousemove listener. No layout impact — the element is fixed and
+ * pointer-events: none.
+ */
+export interface Props { active?: boolean }
+const { active = false } = Astro.props;
+---
+
+{active && (
+  <Fragment>
+    <div class="cursor-spotlight" aria-hidden="true"></div>
+    <script is:inline>
+      (function () {
+        var el = document.querySelector('.cursor-spotlight');
+        if (!el) return;
+        if (window.matchMedia('(hover: none)').matches) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var x = 0, y = 0, pending = false;
+        function apply() {
+          el.style.setProperty('--cursor-x', x + 'px');
+          el.style.setProperty('--cursor-y', y + 'px');
+          pending = false;
+        }
+        window.addEventListener('mousemove', function (e) {
+          x = e.clientX;
+          y = e.clientY;
+          if (!pending) { requestAnimationFrame(apply); pending = true; }
+        }, { passive: true });
+      })();
+    </script>
+  </Fragment>
+)}
+
+<style>
+  .cursor-spotlight {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: screen;
+    background: radial-gradient(
+      600px circle at var(--cursor-x, 50%) var(--cursor-y, 50%),
+      color-mix(in srgb, var(--primary) 8%, transparent),
+      transparent 60%
+    );
+  }
+  /* Light-mode: multiply blend at lower alpha reads as subtle warmth */
+  [data-theme="light"] .cursor-spotlight {
+    mix-blend-mode: multiply;
+    background: radial-gradient(
+      600px circle at var(--cursor-x, 50%) var(--cursor-y, 50%),
+      color-mix(in srgb, var(--primary) 6%, transparent),
+      transparent 60%
+    );
+  }
+  @media (hover: none) { .cursor-spotlight { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .cursor-spotlight { display: none; } }
+</style>
