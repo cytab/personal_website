@@ -47,8 +47,13 @@ jobs:
 
       - name: Build site
         env:
-          SITE_URL: ${{ vars.SITE_URL || 'https://cyrilletabe.github.io' }}
-          BASE_PATH: ${{ vars.BASE_PATH || '/' }}
+          # Defaults target the project site at
+          # https://cytab.github.io/personal_website/. Override with
+          # repo-level Variables (Settings → Secrets and variables →
+          # Actions → Variables) if moving to a custom domain or a
+          # different repo.
+          SITE_URL: ${{ vars.SITE_URL || 'https://cytab.github.io' }}
+          BASE_PATH: ${{ vars.BASE_PATH || '/personal_website/' }}
         run: npm run build
 
       - name: Upload Pages artifact
