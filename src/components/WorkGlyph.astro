@@ -3,9 +3,13 @@
  * WorkGlyph.astro — per-project animated glyph. Pure SVG + CSS, no JS.
  * Each glyph is scoped, ≤ 1.5 KB gzip, and paused under
  * prefers-reduced-motion (via the global safety net in global.css).
+ *
+ * Scope after CV-focused restructure: RobotClaw is the only personal
+ * project carrying a motif on /work/. Academic projects render as
+ * plain text cards.
  */
 export interface Props {
-  slug: 'robotclaw' | 'noovelia-lattice' | 'odu-slam';
+  slug: 'robotclaw';
 }
 const { slug } = Astro.props;
 ---
@@ -27,59 +31,6 @@ const { slug } = Astro.props;
       <circle cx="52" cy="46" r="1.5" fill="#62E0C8" class="p p4"/>
       <circle cx="66" cy="40" r="1.5" fill="#62E0C8" class="p p5"/>
       <circle cx="78" cy="44" r="1.5" fill="#62E0C8" class="p p6"/>
-    </svg>
-  )}
-
-  {slug === 'noovelia-lattice' && (
-    <svg viewBox="0 0 96 64" width="96" height="64" focusable="false">
-      {/* 4x3 lattice grid; path drawn from start to goal */}
-      <g>
-        {Array.from({ length: 4 }).map((_, c) =>
-          Array.from({ length: 3 }).map((_, r) => (
-            <circle cx={12 + c * 24} cy={12 + r * 20} r="2" fill="#1F2427" stroke="#8E8A82" stroke-width="0.5"/>
-          ))
-        )}
-        {/* Path trace */}
-        <polyline
-          points="12,52 36,52 36,32 60,32 60,12 84,12"
-          fill="none"
-          stroke="#F3A03B"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="path"
-        />
-        {/* Start / goal highlights */}
-        <circle cx="12" cy="52" r="3" fill="#62E0C8" class="terminal"/>
-        <circle cx="84" cy="12" r="3" fill="#F3A03B" class="terminal"/>
-      </g>
-    </svg>
-  )}
-
-  {slug === 'odu-slam' && (
-    <svg viewBox="0 0 96 64" width="96" height="64" focusable="false">
-      {/* 2-wheeled sidewalk robot + fading point cloud */}
-      <g transform="translate(22 30)">
-        {/* Body */}
-        <rect x="-12" y="-10" width="24" height="16" fill="#15191B" stroke="#8E8A82" stroke-width="1"/>
-        <rect x="-6" y="-14" width="12" height="5" fill="#15191B" stroke="#8E8A82" stroke-width="1"/>
-        {/* Wheels */}
-        <circle cx="-12" cy="8" r="4" fill="none" stroke="#8E8A82" stroke-width="1" class="wheel"/>
-        <circle cx="12"  cy="8" r="4" fill="none" stroke="#8E8A82" stroke-width="1" class="wheel w2"/>
-        <line x1="-12" y1="8" x2="-9" y2="8" stroke="#F3A03B" stroke-width="1.25" class="wheel-tick"/>
-        <line x1="12" y1="8" x2="15" y2="8" stroke="#F3A03B" stroke-width="1.25" class="wheel-tick wt2"/>
-      </g>
-      {/* Point cloud */}
-      <g class="cloud">
-        <circle cx="54" cy="18" r="1" fill="#62E0C8" class="pt pt1"/>
-        <circle cx="62" cy="24" r="1" fill="#62E0C8" class="pt pt2"/>
-        <circle cx="72" cy="20" r="1" fill="#62E0C8" class="pt pt3"/>
-        <circle cx="80" cy="28" r="1" fill="#62E0C8" class="pt pt4"/>
-        <circle cx="58" cy="36" r="1" fill="#62E0C8" class="pt pt5"/>
-        <circle cx="70" cy="42" r="1" fill="#62E0C8" class="pt pt6"/>
-        <circle cx="82" cy="40" r="1" fill="#62E0C8" class="pt pt7"/>
-        <circle cx="66" cy="48" r="1" fill="#62E0C8" class="pt pt8"/>
-      </g>
     </svg>
   )}
 </div>
@@ -118,66 +69,12 @@ const { slug } = Astro.props;
   }
   .glyph--robotclaw svg { overflow: visible; }
 
-  /* noovelia-lattice — path redraw */
-  .glyph--noovelia-lattice .path {
-    stroke-dasharray: 160;
-    stroke-dashoffset: 160;
-    animation: path-draw 4s infinite cubic-bezier(0.65, 0, 0.35, 1);
-  }
-  @keyframes path-draw {
-    0%        { stroke-dashoffset: 160; }
-    40%, 80%  { stroke-dashoffset: 0; }
-    100%      { stroke-dashoffset: 160; }
-  }
-  .glyph--noovelia-lattice .terminal {
-    animation: terminal-pulse 2.4s infinite ease-in-out;
-  }
-  @keyframes terminal-pulse {
-    0%, 100% { opacity: 0.5; }
-    50%      { opacity: 1; }
-  }
-
-  /* odu-slam — wheel tick rotate + point cloud fade-in */
-  .glyph--odu-slam .wheel-tick {
-    transform-origin: -12px 8px;
-    transform-box: view-box;
-    animation: wheel-spin 1.4s infinite linear;
-  }
-  .glyph--odu-slam .wt2 { transform-origin: 12px 8px; }
-  @keyframes wheel-spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-  }
-  .glyph--odu-slam .pt {
-    opacity: 0;
-    animation: pt-fade 3.6s infinite ease-out;
-  }
-  .glyph--odu-slam .pt1 { animation-delay: 0ms; }
-  .glyph--odu-slam .pt2 { animation-delay: 150ms; }
-  .glyph--odu-slam .pt3 { animation-delay: 300ms; }
-  .glyph--odu-slam .pt4 { animation-delay: 450ms; }
-  .glyph--odu-slam .pt5 { animation-delay: 600ms; }
-  .glyph--odu-slam .pt6 { animation-delay: 750ms; }
-  .glyph--odu-slam .pt7 { animation-delay: 900ms; }
-  .glyph--odu-slam .pt8 { animation-delay: 1050ms; }
-  @keyframes pt-fade {
-    0%, 10%   { opacity: 0; transform: scale(0.8); }
-    40%       { opacity: 1; transform: scale(1); }
-    80%, 100% { opacity: 0; }
-  }
-  .glyph--odu-slam .pt {
-    transform-origin: center;
-    transform-box: fill-box;
-  }
-
-  /* Reduced-motion: held poses for each glyph. */
+  /* Reduced-motion: held pose. */
   @media (prefers-reduced-motion: reduce) {
     .glyph * {
       animation: none !important;
       transition: none !important;
     }
     .glyph--robotclaw .cursor { opacity: 1; }
-    .glyph--noovelia-lattice .path { stroke-dashoffset: 0; }
-    .glyph--odu-slam .pt { opacity: 0.9; }
   }
 </style>

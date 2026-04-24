@@ -58,20 +58,31 @@ Push to `main` → `.github/workflows/deploy.yml` → `actions/deploy-pages@v4`.
 
 ## Routes
 
-- `/` + `/fr/` — Home. Hero + one-paragraph orientation + three featured projects + links out.
-- `/work/` + `/fr/travaux/` — three projects, prose-first, each with a status badge and tech list.
+- `/` + `/fr/` — Home. Hero + one-paragraph orientation + a "Building / Shipping at work" split + links out.
+- `/work/` + `/fr/travaux/` — personal projects only: one flagship (RobotClaw) + three academic projects condensed from the CV.
 - `/research/` + `/fr/recherche/` — four clusters (one paragraph each) + "what I'm pulling in".
-- `/about/` + `/fr/a-propos/` — short bio + CV-by-email card + contact line.
+- `/about/` + `/fr/a-propos/` — full CV (header, education, professional experience, research, skills, about me) with a Download-CV button.
 - `/404` — "route not in plan".
 
 ## CV
 
-`/about/` and `/fr/a-propos/` ship a **"CV — by email"** mailto card
-(`mailto:cyrilletabepro@gmail.com?subject=CV%20request`) instead of a direct
-PDF download. To switch to direct download: drop PDFs into
-`public/cv/cyrille-tabe-cv-{en,fr}.pdf`, update the About pages to swap
-the mailto anchor for a `<a href="/cv/...">Download</a>`, and update
-`tests/e2e/cv-download.spec.ts` to assert the PDF path + 200.
+`/about/` and `/fr/a-propos/` ARE the CV. The page is rendered from a
+structured source in `src/content/copy.ts` (`cv.en` / `cv.fr`), mirroring
+`CV_CYRILLE_TABE_comments_oeucu/main.tex` verbatim for the factual
+sections.
+
+A **Download CV** button on the About page points at
+`/cv/cyrille-tabe-cv-en.pdf`. The PDF is compiled on CI by
+`.github/workflows/deploy.yml` (`continue-on-error` step installs
+`texlive-latex-base`, `texlive-latex-extra`, `latexmk` and runs
+`latexmk -pdf`). Locally `public/cv/` only contains `.gitkeep`, so the
+link 404s until deploy — that is acceptable per the brief, and a short
+inline note below the button tells visitors to email if it's missing.
+A mailto fallback (`mailto:cyrilletabepro@gmail.com?subject=CV%20request`)
+sits next to the download button for the same reason.
+
+The FR page links to the same EN PDF (no FR LaTeX exists yet) and
+annotates it as "(version anglaise)".
 
 ## OG image
 
@@ -101,8 +112,12 @@ Current state on this commit (chromium-desktop):
 ## Content
 
 All copy lives in `src/content/copy.ts` (EN + FR). UI strings live in
-`src/i18n/strings.ts`. Anchor slugs inside `/work/` are stable in EN and
-reused in FR (`#robotclaw`, `#noovelia-lattice`, `#odu-slam`).
+`src/i18n/strings.ts`. Stable anchors:
+
+- `/work/#robotclaw` — flagship personal project.
+- `/work/#safe-mpc-collision-avoidance`, `/work/#collision-free-exploration`,
+  `/work/#intersection-navigation` — academic projects.
+- `/about/#professional-experience` — the employment list on the CV page.
 
 ## Docs (provenance)
 

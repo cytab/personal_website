@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { pageMeta } from '@/i18n/strings';
-import { projects, projectOrder } from '@/content/copy';
+import { projects, projectOrder, academicProjects } from '@/content/copy';
 import WorkGlyph from '@/components/WorkGlyph.astro';
 
 const locale = 'fr' as const;
@@ -13,17 +13,9 @@ const meta = pageMeta[locale].work;
     <header class="page-header">
       <h1 class="page-title">Travaux</h1>
       <p class="prose t-reading">
-        Trois systèmes qui existent dans le monde réel. Chacun m'a appris quelque chose qui ne se lit pas.
+        Projets personnels. Un projet phare en cours et trois projets académiques livrés. Le reste de l'histoire — Noovelia, Odu Technologie, Kinova, E-SMART — vit sur <a href="/fr/a-propos/#professional-experience">À propos</a>, comme expérience professionnelle.
       </p>
     </header>
-
-    <nav class="toc" aria-label="Projets">
-      <ul>
-        {projectOrder.map((slug) => (
-          <li><a href={`#${slug}`}>{projects[slug][locale].title}</a></li>
-        ))}
-      </ul>
-    </nav>
 
     <div class="work">
       {projectOrder.map((slug) => {
@@ -43,13 +35,32 @@ const meta = pageMeta[locale].work;
                 </ul>
               </div>
               <aside class="work__glyph" aria-hidden="true">
-                <WorkGlyph slug={p.slug as any} />
+                <WorkGlyph slug={p.slug as 'robotclaw'} />
               </aside>
             </div>
           </section>
         );
       })}
     </div>
+
+    <section class="academic" aria-labelledby="academic-title">
+      <h2 id="academic-title" class="academic__title">Projets académiques</h2>
+      <ul class="academic__list">
+        {academicProjects.map((a) => (
+          <li id={a.slug} class="academic__item">
+            <div class="academic__row">
+              <h3 class="academic__name">{a.fr.title}</h3>
+              <span class="academic__date">{a.date.fr}</span>
+            </div>
+            <p class="academic__tech">{a.tech.join(' · ')}</p>
+            <p class="academic__summary">{a.fr.summary}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="academic__closing prose">
+        Plus de détails sur demande — ou parcourez les dépôts publics sur <a href="https://github.com/cytab">github.com/cytab</a>.
+      </p>
+    </section>
   </div>
 </BaseLayout>
 
@@ -72,27 +83,14 @@ const meta = pageMeta[locale].work;
     color: var(--ink);
     margin-bottom: var(--space-3);
   }
-
-  .toc {
-    padding-block: var(--space-3);
-    border-block: 1px solid var(--surface-2);
-    margin-block: var(--space-3) var(--space-5);
+  .page-header a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--primary) 40%, transparent);
   }
-  .toc ul {
-    list-style: none; padding: 0; margin: 0;
-    display: flex; flex-wrap: wrap; gap: var(--space-4);
-  }
-  .toc a {
-    font-family: var(--font-mono);
-    font-size: var(--fs-mono);
-    letter-spacing: var(--tr-mono);
-    color: var(--ink-muted);
-    text-decoration: none;
-    transition: color 120ms ease;
-  }
-  .toc a:hover,
-  .toc a:focus-visible {
-    color: var(--ink);
+  .page-header a:hover,
+  .page-header a:focus-visible {
+    text-decoration-color: var(--primary);
   }
 
   .work__entry {
@@ -158,5 +156,84 @@ const meta = pageMeta[locale].work;
     padding: 2px var(--space-2);
     border: 1px solid var(--surface-2);
     border-radius: var(--radius-sm);
+  }
+
+  /* Academic projects — text-only, tighter layout */
+  .academic {
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--surface-2);
+  }
+  .academic__title {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    letter-spacing: var(--tr-mono);
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    font-weight: var(--fw-medium);
+    margin-bottom: var(--space-4);
+  }
+  .academic__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  .academic__item {
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--surface-2);
+    scroll-margin-top: 4rem;
+  }
+  .academic__item:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .academic__row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3);
+  }
+  .academic__name {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    font-weight: var(--fw-semibold);
+    color: var(--ink);
+    margin: 0;
+  }
+  .academic__date {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: var(--tr-micro);
+    color: var(--ink-muted);
+    text-align: right;
+  }
+  .academic__tech {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: var(--tr-micro);
+    color: var(--ink-muted);
+    margin: var(--space-1) 0 var(--space-2) 0;
+  }
+  .academic__summary {
+    color: var(--ink);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    margin: 0;
+  }
+  .academic__closing {
+    margin-top: var(--space-5);
+    color: var(--ink-muted);
+  }
+  .academic__closing a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--primary) 40%, transparent);
+  }
+  .academic__closing a:hover,
+  .academic__closing a:focus-visible {
+    text-decoration-color: var(--primary);
   }
 </style>

@@ -4,7 +4,6 @@ import { pageMeta } from '@/i18n/strings';
 import {
   hero,
   orientation,
-  projects,
 } from '@/content/copy';
 import RobotArmIsland from '@/components/RobotArm/RobotArmIsland.astro';
 
@@ -12,9 +11,6 @@ const locale = 'en' as const;
 const meta = pageMeta[locale].home;
 const h = hero[locale];
 const o = orientation[locale];
-
-// Featured trio — flagship projects on the home page.
-const featuredSlugs = ['robotclaw', 'noovelia-lattice', 'odu-slam'] as const;
 ---
 
 <BaseLayout
@@ -50,20 +46,27 @@ const featuredSlugs = ['robotclaw', 'noovelia-lattice', 'odu-slam'] as const;
 
     <section class="featured" aria-labelledby="featured-title">
       <h2 id="featured-title" class="section-title">Featured work</h2>
-      <ul class="featured__list">
-        {featuredSlugs.map((slug) => {
-          const p = projects[slug];
-          const l = p[locale];
-          return (
-            <li class="featured__item">
-              <a class="featured__link" href={`/work/#${p.slug}`}>
-                <h3 class="featured__title">{l.title}</h3>
-                <p class="featured__body">{l.body}</p>
-              </a>
-            </li>
-          );
-        })}
-      </ul>
+      <dl class="featured__split">
+        <div class="featured__row">
+          <dt class="featured__label">Building →</dt>
+          <dd class="featured__value">
+            <a href="/work/#robotclaw">RobotClaw</a> <span class="featured__aside">(personal project, open-source soon)</span>
+          </dd>
+        </div>
+        <div class="featured__row">
+          <dt class="featured__label">Shipping at work →</dt>
+          <dd class="featured__value">
+            <a href="/about/#professional-experience">Noovelia</a> <span class="featured__aside">(behavior trees + 4D lattice planner + MPC on AGVs)</span>
+          </dd>
+        </div>
+        <div class="featured__row">
+          <dt class="featured__label"></dt>
+          <dd class="featured__value">
+            <a href="/about/#professional-experience">Odu Technologie</a> <span class="featured__aside">(SLAM + multi-sensor fusion on sidewalk robots)</span>
+          </dd>
+        </div>
+      </dl>
+      <p class="featured__foot">→ Full CV on <a href="/about/">About</a> · Research interests on <a href="/research/">Research</a></p>
     </section>
 
     <section class="elsewhere" aria-label="More">
@@ -249,40 +252,69 @@ const featuredSlugs = ['robotclaw', 'noovelia-lattice', 'odu-slam'] as const;
     font-weight: var(--fw-medium);
     margin-bottom: var(--space-3);
   }
-  .featured__list {
-    list-style: none;
-    padding: 0;
+  .featured__split {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-3);
   }
-  .featured__item {
+  .featured__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
     border-top: 1px solid var(--surface-2);
     padding-top: var(--space-3);
   }
-  .featured__link {
-    display: block;
-    color: inherit;
-    text-decoration: none;
+  @media (min-width: 720px) {
+    .featured__row {
+      grid-template-columns: 14rem 1fr;
+      gap: var(--space-3);
+      align-items: baseline;
+    }
   }
-  .featured__title {
-    font-family: var(--font-body);
-    font-size: 1.125rem;
-    font-weight: var(--fw-semibold);
-    color: var(--ink);
-    margin-bottom: var(--space-2);
-    transition: color 120ms ease;
-  }
-  .featured__link:hover .featured__title,
-  .featured__link:focus-visible .featured__title {
-    color: var(--primary);
-  }
-  .featured__body {
+  .featured__label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    letter-spacing: var(--tr-mono);
     color: var(--ink-muted);
+    margin: 0;
+  }
+  .featured__value {
+    margin: 0;
+    color: var(--ink);
     font-size: var(--fs-body);
     line-height: var(--lh-body);
-    margin: 0;
+  }
+  .featured__value a {
+    color: var(--primary);
+    font-weight: var(--fw-semibold);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--primary) 40%, transparent);
+    transition: text-decoration-color 120ms ease;
+  }
+  .featured__value a:hover,
+  .featured__value a:focus-visible {
+    text-decoration-color: var(--primary);
+  }
+  .featured__aside {
+    color: var(--ink-muted);
+    font-size: var(--fs-body);
+  }
+  .featured__foot {
+    margin-top: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono);
+    letter-spacing: var(--tr-mono);
+    color: var(--ink-muted);
+  }
+  .featured__foot a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--primary) 40%, transparent);
+  }
+  .featured__foot a:hover,
+  .featured__foot a:focus-visible {
+    text-decoration-color: var(--primary);
   }
 
   .elsewhere {
