@@ -60,7 +60,7 @@ Push to `main` → `.github/workflows/deploy.yml` → `actions/deploy-pages@v4`.
 ## CV
 
 `/about/` and `/fr/a-propos/` ship a **"CV — by email"** mailto card
-(`mailto:cyrilletabe@gmail.com?subject=CV%20request`) instead of a direct
+(`mailto:cyrilletabepro@gmail.com?subject=CV%20request`) instead of a direct
 PDF download. To switch to direct download: drop PDFs into
 `public/cv/cyrille-tabe-cv-{en,fr}.pdf`, update the About pages to swap
 the mailto anchor for a `<a href="/cv/...">Download</a>`, and update

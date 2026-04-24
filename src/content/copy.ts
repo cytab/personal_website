@@ -233,12 +233,12 @@ export const closing = {
   en: {
     eyebrow: '§ 09 / INVITATION',
     text:
-      "If you're building something that has to perceive, decide, or act — or you just want to argue about belief states over coffee — write to me. I answer every email that isn't a pitch deck. cyrilletabe@gmail.com.",
+      "If you're building something that has to perceive, decide, or act — or you just want to argue about belief states over coffee — write to me. I answer every email that isn't a pitch deck. cyrilletabepro@gmail.com.",
   },
   fr: {
     eyebrow: '§ 09 / INVITATION',
     text:
-      "Si vous bâtissez quelque chose qui doit percevoir, décider ou agir — ou si vous voulez simplement débattre d'états de croyance devant un café — écrivez-moi. Je réponds à chaque courriel qui n'est pas un pitch deck. cyrilletabe@gmail.com.",
+      "Si vous bâtissez quelque chose qui doit percevoir, décider ou agir — ou si vous voulez simplement débattre d'états de croyance devant un café — écrivez-moi. Je réponds à chaque courriel qui n'est pas un pitch deck. cyrilletabepro@gmail.com.",
   },
 };
 

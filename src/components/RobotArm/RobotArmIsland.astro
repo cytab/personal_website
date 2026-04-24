@@ -1,0 +1,190 @@
+---
+/**
+ * RobotArmIsland.astro — SSR wrapper for the RobotArm React island.
+ *
+ * SSR renders an inline SVG schematic placeholder so the layout does
+ * NOT shift while the WebGL bundle hydrates. Once hydrated, the
+ * React island replaces the placeholder with a live canvas.
+ *
+ * The React island itself is loaded lazily via `client:visible`,
+ * which keeps the ~150 KB gzip three.js bundle out of the initial
+ * page load.
+ */
+import RobotArm from './RobotArm.tsx';
+
+export interface Props {
+  /** Locale for labels. */
+  locale: 'en' | 'fr';
+}
+const { locale } = Astro.props;
+
+const strings = locale === 'fr'
+  ? {
+      pauseLabel: 'Mettre la scène en pause',
+      resumeLabel: 'Reprendre la scène',
+      sceneLabel: 'Bras robotique six axes procédural effectuant une chorégraphie pick-and-place.',
+      sceneEyebrow: '§ 00 / SCÈNE',
+      sceneSubtitle: '6-DOF · pick & place · procédural',
+    }
+  : {
+      pauseLabel: 'Pause scene',
+      resumeLabel: 'Resume scene',
+      sceneLabel: 'Procedural six-axis robot arm performing a pick-and-place choreography.',
+      sceneEyebrow: '§ 00 / SCENE',
+      sceneSubtitle: '6-DOF · pick & place · procedural',
+    };
+---
+
+<figure class="robotarm-island" aria-labelledby="robotarm-caption">
+  <div class="robotarm-island__stage">
+    <!-- SSR fallback schematic — replaced when the React island hydrates.
+         ~2 KB inline, no deps. Decorative, text-equivalent provided via
+         the fig-caption + live canvas aria-label. -->
+    <svg
+      class="robotarm-island__svg"
+      viewBox="0 0 320 240"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label={strings.sceneLabel}
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <defs>
+        <pattern id="ra-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1F2427" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="320" height="240" fill="url(#ra-grid)"/>
+      <!-- ground plinth -->
+      <ellipse cx="160" cy="200" rx="60" ry="10" fill="none" stroke="#8E8A82" stroke-width="1"/>
+      <!-- base -->
+      <rect x="145" y="170" width="30" height="30" fill="#15191B" stroke="#8E8A82" stroke-width="1"/>
+      <!-- upper arm -->
+      <line x1="160" y1="170" x2="180" y2="110" stroke="#8E8A82" stroke-width="1.5"/>
+      <line x1="160" y1="170" x2="160" y2="110" stroke="#8E8A82" stroke-width="1.5"/>
+      <rect x="155" y="105" width="10" height="10" fill="#15191B" stroke="#8E8A82" stroke-width="1"/>
+      <!-- forearm -->
+      <line x1="160" y1="105" x2="220" y2="75" stroke="#8E8A82" stroke-width="1.5"/>
+      <line x1="165" y1="105" x2="225" y2="75" stroke="#8E8A82" stroke-width="1.5"/>
+      <!-- wrist -->
+      <rect x="215" y="70" width="12" height="10" fill="#15191B" stroke="#8E8A82" stroke-width="1"/>
+      <!-- gripper -->
+      <line x1="218" y1="80" x2="218" y2="92" stroke="#8E8A82" stroke-width="1.25"/>
+      <line x1="224" y1="80" x2="224" y2="92" stroke="#8E8A82" stroke-width="1.25"/>
+      <!-- LED -->
+      <circle cx="221" cy="75" r="2" fill="#F3A03B" opacity="0.75"/>
+      <!-- target cube on the left -->
+      <rect x="70" y="188" width="14" height="14" fill="#15191B" stroke="#62E0C8" stroke-width="1"/>
+    </svg>
+
+    <RobotArm client:visible strings={strings} />
+  </div>
+
+  <figcaption id="robotarm-caption" class="robotarm-island__caption">
+    <span class="robotarm-island__eyebrow">{strings.sceneEyebrow}</span>
+    <span class="robotarm-island__subtitle">{strings.sceneSubtitle}</span>
+  </figcaption>
+</figure>
+
+<style>
+  .robotarm-island {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    border: 1px solid var(--surface-2);
+    border-radius: var(--radius-md);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface-1) 60%, transparent) 0%,
+      transparent 100%
+    );
+    overflow: hidden;
+  }
+
+  .robotarm-island__caption {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-top: 1px solid var(--surface-2);
+    background: var(--surface-1);
+  }
+  .robotarm-island__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: var(--tr-micro);
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .robotarm-island__subtitle {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: var(--tr-micro);
+    color: var(--ink-muted);
+  }
+
+  .robotarm-island__stage {
+    position: relative;
+    width: 100%;
+    /* 16:10 desktop aspect */
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .robotarm-island__stage {
+      /* 4:3 on mobile for better vertical presence */
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  /* SSR SVG sits behind the canvas; canvas covers it once hydrated. */
+  .robotarm-island__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  /* React island gets positioned absolutely over the SVG. */
+  .robotarm-island :global(.robotarm) {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .robotarm-island :global(.robotarm__canvas) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .robotarm-island :global(.robotarm__canvas > canvas) {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .robotarm-island :global(.robotarm__pause) {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: color-mix(in srgb, var(--surface-1) 85%, transparent);
+    color: var(--ink);
+    border: 1px solid var(--surface-2);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: color 120ms ease, border-color 120ms ease;
+    z-index: 3;
+  }
+  .robotarm-island :global(.robotarm__pause:hover),
+  .robotarm-island :global(.robotarm__pause:focus-visible) {
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+</style>

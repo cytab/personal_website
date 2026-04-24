@@ -63,7 +63,7 @@ const personLd = {
     addressCountry: 'CA',
   },
   knowsLanguage: ['en', 'fr'],
-  email: 'mailto:cyrilletabe@gmail.com',
+  email: 'mailto:cyrilletabepro@gmail.com',
 };
 ---
 
@@ -75,13 +75,17 @@ const personLd = {
     <meta name="generator" content={Astro.generator} />
 
     <!--
-      Content-Security-Policy. Tight defaults; no inline scripts needed
-      since the site ships zero JS on every route. The single `unsafe-inline`
-      for style-src covers Astro's scoped component styles.
+      Content-Security-Policy. Defaults tight. `unsafe-inline` on
+      script-src is required because Astro's `client:visible` island
+      hydration uses a small inline bootstrap. The site is static and
+      accepts no user input, so the inline-script surface is limited
+      to code shipped by the build. `'unsafe-inline'` on style-src
+      covers Astro's scoped component styles. `blob:` is needed on
+      worker-src only if we add workers (we don't).
     -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests"
     />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 

@@ -9,7 +9,7 @@
  */
 import { test, expect } from '@playwright/test';
 
-const MAILTO_RE = /^mailto:cyrilletabe@gmail\.com/i;
+const MAILTO_RE = /^mailto:cyrilletabepro@gmail\.com/i;
 
 test.describe('CV access', () => {
   for (const { lang, url } of [
@@ -18,7 +18,7 @@ test.describe('CV access', () => {
   ]) {
     test(`${lang.toUpperCase()} CV mailto fallback is wired on ${url}`, async ({ page }) => {
       await page.goto(url);
-      const cvMailto = page.locator(`a[href^="mailto:cyrilletabe@gmail.com"]`).filter({
+      const cvMailto = page.locator(`a[href^="mailto:cyrilletabepro@gmail.com"]`).filter({
         hasText: /CV/i,
       });
       await expect(cvMailto.first()).toBeVisible();

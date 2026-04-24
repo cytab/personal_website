@@ -12,7 +12,7 @@ If you believe you've found a security issue — a vulnerable dependency,
 a cross-site-scripting vector, a data exposure, a supply-chain concern,
 or anything that could harm a visitor — please email:
 
-**cyrilletabe@gmail.com**
+**cyrilletabepro@gmail.com**
 
 Include:
 

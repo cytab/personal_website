@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
+import react from '@astrojs/react';
 
 // Site URL and base path are configurable via env so the same build
 // works for a user-site (cyrilletabe.github.io), a custom domain,
@@ -21,6 +22,10 @@ export default defineConfig({
     tailwind({ applyBaseStyles: false }),
     mdx(),
     sitemap(),
+    // React is scoped — only the home hero hydrates a React island. No
+    // global runtime, no hydration on other routes. `client:visible`
+    // keeps the bundle out of the critical path.
+    react(),
   ],
   i18n: {
     defaultLocale: 'en',
