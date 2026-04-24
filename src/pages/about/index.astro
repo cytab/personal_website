@@ -1,12 +1,13 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { pageMeta } from '@/i18n/strings';
+import { pageMeta, ui } from '@/i18n/strings';
 import { cv } from '@/content/copy';
 import AboutSignature from '@/components/AboutSignature.astro';
 
 const locale = 'en' as const;
 const meta = pageMeta[locale].about;
 const c = cv[locale];
+const uit = ui[locale];
 ---
 
 <BaseLayout locale={locale} title={meta.title} description={meta.description} pathKey="about/">
@@ -21,7 +22,23 @@ const c = cv[locale];
       </div>
       <ul class="cv-contact" aria-label="Contact">
         <li>{c.contact.phone}</li>
-        <li><a href={`mailto:${c.contact.email}`}>{c.contact.email}</a></li>
+        <li>
+          <a href={`mailto:${c.contact.email}`}>{c.contact.email}</a>
+          <button
+            class="copy-email"
+            type="button"
+            data-copy-email={c.contact.email}
+            data-copy-toast={uit.copy.toast}
+            data-copy-failed={uit.copy.failed}
+            aria-label={uit.copy.label}
+            title={uit.copy.label}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+              <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+            </svg>
+          </button>
+        </li>
         <li><a href={`https://${c.contact.linkedin}`} rel="noopener">{c.contact.linkedin}</a></li>
         <li><a href={`https://${c.contact.github}`} rel="noopener">{c.contact.github}</a></li>
         <li>{c.contact.location}</li>
@@ -46,7 +63,7 @@ const c = cv[locale];
       <p class="cv-download__note">{c.download.note}</p>
     </header>
 
-    <section class="cv-section" aria-labelledby="edu-title">
+    <section class="cv-section reveal-up" aria-labelledby="edu-title">
       <h2 id="edu-title" class="cv-section__title">{c.education.heading}</h2>
       <div class="cv-entries">
         {c.education.items.map((item) => (
@@ -61,7 +78,7 @@ const c = cv[locale];
       </div>
     </section>
 
-    <section id="professional-experience" class="cv-section" aria-labelledby="exp-title">
+    <section id="professional-experience" class="cv-section reveal-up" aria-labelledby="exp-title">
       <h2 id="exp-title" class="cv-section__title">{c.experience.heading}</h2>
       <div class="cv-entries">
         {c.experience.items.map((job) => (
@@ -83,7 +100,7 @@ const c = cv[locale];
       </div>
     </section>
 
-    <section class="cv-section" aria-labelledby="res-title">
+    <section class="cv-section reveal-up" aria-labelledby="res-title">
       <h2 id="res-title" class="cv-section__title">{c.research.heading}</h2>
       <div class="cv-entries">
         {c.research.items.map((r) => (
@@ -101,7 +118,7 @@ const c = cv[locale];
       </div>
     </section>
 
-    <section class="cv-section" aria-labelledby="skills-title">
+    <section id="skills" class="cv-section reveal-up" aria-labelledby="skills-title">
       <h2 id="skills-title" class="cv-section__title">{c.skills.heading}</h2>
       <dl class="cv-skills">
         <div class="cv-skills__row">
@@ -133,16 +150,110 @@ const c = cv[locale];
       </dl>
     </section>
 
-    <section class="cv-section" aria-labelledby="aboutme-title">
+    <section class="cv-section reveal-up" aria-labelledby="aboutme-title">
       <h2 id="aboutme-title" class="cv-section__title">{c.aboutMe.heading}</h2>
       <p class="prose t-reading">{c.aboutMe.body}</p>
     </section>
 
     <p class="contact prose">
       Contact: <a href={`mailto:${c.contact.email}`}>{c.contact.email}</a>
+      <button
+        class="copy-email"
+        type="button"
+        data-copy-email={c.contact.email}
+        data-copy-toast={uit.copy.toast}
+        data-copy-failed={uit.copy.failed}
+        aria-label={uit.copy.label}
+        title={uit.copy.label}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+          <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+        </svg>
+      </button>
     </p>
   </div>
 </BaseLayout>
+
+<!-- Copy-email + count-up (~700 B gzipped combined). -->
+<script is:inline>
+  (function () {
+    // Copy email buttons
+    document.querySelectorAll('.copy-email').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var email = btn.getAttribute('data-copy-email') || '';
+        var tMsg = btn.getAttribute('data-copy-toast') || 'Copied';
+        var fMsg = btn.getAttribute('data-copy-failed') || 'Copy failed';
+        function showToast(msg) {
+          var prev = document.querySelector('.cmdk-toast');
+          if (prev) prev.remove();
+          var el = document.createElement('div');
+          el.className = 'cmdk-toast';
+          el.setAttribute('role', 'status');
+          el.setAttribute('aria-live', 'polite');
+          el.textContent = msg;
+          document.body.appendChild(el);
+          requestAnimationFrame(function () { el.classList.add('is-visible'); });
+          setTimeout(function () {
+            el.classList.remove('is-visible');
+            setTimeout(function () { el.remove(); }, 300);
+          }, 1600);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(email).then(
+            function () {
+              btn.classList.add('is-copied');
+              setTimeout(function () { btn.classList.remove('is-copied'); }, 1200);
+              showToast(tMsg);
+            },
+            function () { showToast(fMsg); }
+          );
+        } else {
+          showToast(fMsg);
+        }
+      });
+    });
+
+    // Count-up animation for CV bullet numbers.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Match: "14%", "14 %", "14 %" with NBSP, "3+" (weeks/semaines), "3+ weeks"
+    // We wrap the entire number+optional-suffix as a span we can animate.
+    var bullets = document.querySelectorAll('.cv-bullets li');
+    bullets.forEach(function (li) {
+      if (li.querySelector('.count-up')) return;
+      var html = li.innerHTML;
+      // Numeric patterns: NN%, NN %, NN %, NN+
+      var out = html.replace(/(\d+)( %|\s%|%|\+)/g, function (_m, num, suf) {
+        return '<span class="count-up" data-to="' + num + '" data-suffix="' + suf.replace(/"/g, '') + '">' + num + suf + '</span>';
+      });
+      if (out !== html) li.innerHTML = out;
+    });
+
+    var spans = document.querySelectorAll('.count-up');
+    if (!spans.length || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (ent) {
+        if (!ent.isIntersecting) return;
+        var el = ent.target;
+        io.unobserve(el);
+        var to = parseInt(el.getAttribute('data-to') || '0', 10);
+        var suf = el.getAttribute('data-suffix') || '';
+        var dur = 900;
+        var t0 = performance.now();
+        function frame(now) {
+          var t = Math.min(1, (now - t0) / dur);
+          // ease-out cubic
+          var v = 1 - Math.pow(1 - t, 3);
+          var n = Math.round(to * v);
+          el.textContent = n + suf;
+          if (t < 1) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      });
+    }, { threshold: 0.4 });
+    spans.forEach(function (s) { io.observe(s); });
+  })();
+</script>
 
 <style>
   .page {

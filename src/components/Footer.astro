@@ -4,6 +4,9 @@ import { ui, localePrefix, type Locale } from '@/i18n/strings';
 export interface Props { locale: Locale; pathKey: string }
 const { locale } = Astro.props;
 const t = ui[locale];
+const copyLabel = ui[locale].copy.label;
+const copyToast = ui[locale].copy.toast;
+const copyFailed = ui[locale].copy.failed;
 const prefix = localePrefix(locale);
 const workPath = locale === 'en' ? 'work/' : 'travaux/';
 const researchPath = locale === 'en' ? 'research/' : 'recherche/';
@@ -22,7 +25,23 @@ const githubUrl = `https://github.com/${githubHandle}`;
         <li><a href={`${prefix}${workPath}`}>{t.navWork}</a></li>
         <li><a href={`${prefix}${researchPath}`}>{t.navResearch}</a></li>
         <li><a href={`${prefix}${aboutPath}`}>{t.navAbout}</a></li>
-        <li><a href="mailto:cyrilletabepro@gmail.com">{t.writeToMe}</a></li>
+        <li>
+          <a href="mailto:cyrilletabepro@gmail.com">{t.writeToMe}</a>
+          <button
+            class="copy-email"
+            type="button"
+            data-copy-email="cyrilletabepro@gmail.com"
+            data-copy-toast={copyToast}
+            data-copy-failed={copyFailed}
+            aria-label={copyLabel}
+            title={copyLabel}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+            </svg>
+          </button>
+        </li>
         <li><a href={githubUrl} rel="noopener noreferrer">GitHub</a></li>
       </ul>
     </nav>
@@ -32,6 +51,47 @@ const githubUrl = `https://github.com/${githubHandle}`;
     </p>
   </div>
 </footer>
+
+<script is:inline>
+  (function () {
+    function onClick(e) {
+      var btn = e.currentTarget;
+      var email = btn.getAttribute('data-copy-email') || '';
+      var toastMsg = btn.getAttribute('data-copy-toast') || 'Copied';
+      var failedMsg = btn.getAttribute('data-copy-failed') || 'Copy failed';
+      function showToast(msg) {
+        var prev = document.querySelector('.cmdk-toast');
+        if (prev) prev.remove();
+        var t = document.createElement('div');
+        t.className = 'cmdk-toast';
+        t.setAttribute('role', 'status');
+        t.setAttribute('aria-live', 'polite');
+        t.textContent = msg;
+        document.body.appendChild(t);
+        requestAnimationFrame(function () { t.classList.add('is-visible'); });
+        setTimeout(function () {
+          t.classList.remove('is-visible');
+          setTimeout(function () { t.remove(); }, 300);
+        }, 1600);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(
+          function () {
+            btn.classList.add('is-copied');
+            setTimeout(function () { btn.classList.remove('is-copied'); }, 1200);
+            showToast(toastMsg);
+          },
+          function () { showToast(failedMsg); }
+        );
+      } else {
+        showToast(failedMsg);
+      }
+    }
+    document.querySelectorAll('.copy-email').forEach(function (b) {
+      b.addEventListener('click', onClick);
+    });
+  })();
+</script>
 
 <style>
   .site-footer {
