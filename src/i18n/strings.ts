@@ -87,12 +87,12 @@ export const pageMeta = {
     home: {
       title: 'Cyrille Tabe — Robotics software engineer, Montréal',
       description:
-        'Robotics software engineer in Montréal. I build decision-making machines that behave well under uncertainty — AGVs, drones, SLAM, a local-first AI assistant.',
+        'Robotics software engineer in Montréal. I build decision-making machines that behave well under uncertainty — AGVs, SLAM, motion planning, a local-first AI assistant.',
     },
     work: {
       title: 'Work — Cyrille Tabe',
       description:
-        'Five systems shipped in the physical world — RobotClaw, OpenClaw, a drone autonomy stack, a 4D lattice planner at Noovelia, and SLAM at Odu.',
+        'Systems shipped in the physical world — RobotClaw, a 4D lattice planner at Noovelia, and SLAM at Odu.',
     },
     research: {
       title: 'Research — Cyrille Tabe',
@@ -113,12 +113,12 @@ export const pageMeta = {
     home: {
       title: 'Cyrille Tabe — Ingénieur logiciel en robotique, Montréal',
       description:
-        'Ingénieur logiciel en robotique à Montréal. Je construis des machines qui décident bien sous incertitude — AGV, drones, SLAM, un assistant IA local.',
+        'Ingénieur logiciel en robotique à Montréal. Je construis des machines qui décident bien sous incertitude — AGV, SLAM, planification, un assistant IA local.',
     },
     work: {
       title: 'Travaux — Cyrille Tabe',
       description:
-        'Cinq systèmes livrés dans le monde réel — RobotClaw, OpenClaw, une pile d’autonomie drone, un planificateur 4D chez Noovelia, du SLAM chez Odu.',
+        'Systèmes livrés dans le monde réel — RobotClaw, un planificateur 4D chez Noovelia, du SLAM chez Odu.',
     },
     research: {
       title: 'Recherche — Cyrille Tabe',

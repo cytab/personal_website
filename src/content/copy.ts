@@ -132,48 +132,6 @@ export const projects: Record<string, ProjectEntry> = {
         "Un assistant IA local qui maintient un belief state POMDP sur ce que j'essaie réellement de faire à tout moment, et qui explore un arbre d'intention MCTS pour décider quoi remonter ensuite. La pile est volontairement sobre quand elle peut l'être : Ollama faisant tourner qwen2.5:7b sur ma propre machine, un bus MQTT pour que les capteurs du portable, du téléphone (client Flutter) et de la montre parlent tous au même cerveau, ChromaDB pour le retrieval, SQLite pour un journal auditable de chaque décision. Ce que j'ai appris en le construisant : le problème dur n'est pas le raisonnement, c'est la mémoire — décider ce qu'on garde, ce qu'on compresse, ce qu'on oublie, pour que le lendemain reparte du bon prior. J'ai appris qu'un assistant qui n'écrit pas ses propres erreurs est condamné à te poser deux fois la même question. Ensuite : sortie open-source, lancement sur HN, et un client téléphone qui écoute sans vider la batterie ni envoyer l'audio hors de l'appareil.",
     },
   },
-  openclaw: {
-    slug: 'openclaw',
-    cluster: 'systems',
-    tech: ['TypeScript', 'Node.js', 'MCP'],
-    en: {
-      title: 'OpenClaw',
-      status: 'in production',
-      body:
-        "The action backend behind RobotClaw — TypeScript, Node, fifty-plus integrations. Taught me that integrations are a taxonomy problem before they're an engineering one. Next: pluggable tool manifests and an MCP bridge so other models can drive it.",
-      bodyLong:
-        "OpenClaw is the action-execution backend RobotClaw calls when reasoning is done and something in the world actually has to change. It's TypeScript and Node, and it currently exposes about fifty integrations — calendar, mail, files, shell, HTTP clients for a long tail of small services. I wrote it because the interesting question wasn't 'can an LLM call a tool' but 'how do you name, group, and version fifty tools so a belief-state planner above them can reason about cost and side-effects.' What it taught me: integrations are a taxonomy problem first and an engineering one second. The right abstraction is a tool manifest — capabilities, inputs, side-effects, undo semantics — not a function signature. I learned the hard way that every tool that silently succeeds is a bug waiting to surface in the audit log a week later. Next: pluggable tool manifests so third parties can register without a fork, and an MCP bridge so other models — not just RobotClaw — can drive the same action set.",
-    },
-    fr: {
-      title: 'OpenClaw',
-      status: 'en production',
-      body:
-        "Le backend d'exécution derrière RobotClaw — TypeScript, Node, plus de cinquante intégrations. M'a appris que les intégrations sont d'abord un problème de taxonomie, ensuite d'ingénierie. Ensuite : manifestes d'outils branchables et pont MCP pour que d'autres modèles le pilotent.",
-      bodyLong:
-        "OpenClaw est le backend d'exécution d'actions que RobotClaw appelle quand le raisonnement est fait et qu'il faut vraiment changer quelque chose dans le monde. C'est TypeScript et Node, et il expose aujourd'hui une cinquantaine d'intégrations — calendrier, courriel, fichiers, shell, clients HTTP pour une longue traîne de petits services. Je l'ai écrit parce que la vraie question n'était pas « un LLM peut-il appeler un outil » mais « comment nommer, regrouper et versionner cinquante outils pour qu'un planificateur à base de belief state raisonne au-dessus sur le coût et les effets de bord ». Ce qu'il m'a appris : les intégrations sont d'abord un problème de taxonomie, ensuite un problème d'ingénierie. La bonne abstraction, c'est un manifeste d'outil — capacités, entrées, effets de bord, sémantique d'annulation — pas une signature de fonction. J'ai appris à la dure que chaque outil qui réussit en silence est un bogue qui remontera dans le journal d'audit une semaine plus tard. Ensuite : manifestes d'outils branchables pour que des tiers s'enregistrent sans fork, et un pont MCP pour que d'autres modèles — pas seulement RobotClaw — pilotent le même jeu d'actions.",
-    },
-  },
-  'drone-stack': {
-    slug: 'drone-stack',
-    cluster: 'perception',
-    tech: ['Jetson Orin', 'PX4', 'edge AI', 'VIO'],
-    en: {
-      title: 'Drone autonomy stack',
-      status: 'in flight',
-      body:
-        "Jetson Orin with PX4 and edge AI, for drones that have to think before the link drops. Taught me the cost of every watt and every millisecond in flight. Next: onboard VIO and a tighter perception-to-control loop.",
-      bodyLong:
-        "A drone autonomy stack built around a Jetson Orin companion computer, PX4 as the flight controller, and edge AI doing perception and short-horizon decision on-board. The assumption from the first commit is that the radio link will drop — the drone has to keep flying a good plan without asking anyone. What it taught me: every watt and every millisecond in flight is priced in, and the aggregate price is the mission. I stopped thinking of latency as a UX number and started thinking of it as a control-loop stability margin. I also learned how much of 'AI in the loop' is really careful scheduling — who runs when, who preempts whom, how long a vision stage is allowed to starve an IMU update before the controller feels it. Next: onboard VIO so the stack doesn't lean on GPS in urban canyons, and a tighter perception-to-control loop so the thing the camera sees can bend the trajectory a cycle sooner.",
-    },
-    fr: {
-      title: "Pile d'autonomie drone",
-      status: 'en vol',
-      body:
-        "Jetson Orin avec PX4 et IA embarquée, pour des drones qui doivent réfléchir avant que la liaison tombe. M'a appris le coût de chaque watt et de chaque milliseconde en vol. Ensuite : VIO embarquée et une boucle perception-contrôle plus serrée.",
-      bodyLong:
-        "Une pile d'autonomie drone bâtie autour d'un ordinateur compagnon Jetson Orin, PX4 comme contrôleur de vol, et de l'IA embarquée qui fait de la perception et de la décision à court horizon sur l'appareil. L'hypothèse, dès le premier commit, c'est que la liaison radio va tomber — le drone doit continuer à voler un bon plan sans rien demander à personne. Ce qu'elle m'a appris : chaque watt et chaque milliseconde en vol a un prix, et le prix agrégé, c'est la mission. J'ai cessé de voir la latence comme un chiffre d'UX et j'ai commencé à la voir comme une marge de stabilité de boucle de contrôle. J'ai aussi appris à quel point « l'IA dans la boucle » est en fait de l'ordonnancement soigneux — qui tourne quand, qui préempte qui, combien de temps un étage vision peut affamer une mise à jour IMU avant que le contrôleur le sente. Ensuite : VIO embarquée pour que la pile ne dépende pas du GPS dans les canyons urbains, et une boucle perception-contrôle plus serrée pour que ce que la caméra voit infléchisse la trajectoire un cycle plus tôt.",
-    },
-  },
   'noovelia-lattice': {
     slug: 'noovelia-lattice',
     cluster: 'planning',
@@ -223,8 +181,6 @@ export type ProjectSlug = keyof typeof projects;
 /** Stable ordering for listings. */
 export const projectOrder: ProjectSlug[] = [
   'robotclaw',
-  'openclaw',
-  'drone-stack',
   'noovelia-lattice',
   'odu-slam',
 ];

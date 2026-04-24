@@ -59,7 +59,7 @@ Push to `main` → `.github/workflows/deploy.yml` → `actions/deploy-pages@v4`.
 ## Routes
 
 - `/` + `/fr/` — Home. Hero + one-paragraph orientation + three featured projects + links out.
-- `/work/` + `/fr/travaux/` — five projects, prose-first, each with a status badge and tech list.
+- `/work/` + `/fr/travaux/` — three projects, prose-first, each with a status badge and tech list.
 - `/research/` + `/fr/recherche/` — four clusters (one paragraph each) + "what I'm pulling in".
 - `/about/` + `/fr/a-propos/` — short bio + CV-by-email card + contact line.
 - `/404` — "route not in plan".
@@ -102,8 +102,7 @@ Current state on this commit (chromium-desktop):
 
 All copy lives in `src/content/copy.ts` (EN + FR). UI strings live in
 `src/i18n/strings.ts`. Anchor slugs inside `/work/` are stable in EN and
-reused in FR (`#robotclaw`, `#openclaw`, `#drone-stack`,
-`#noovelia-lattice`, `#odu-slam`).
+reused in FR (`#robotclaw`, `#noovelia-lattice`, `#odu-slam`).
 
 ## Docs (provenance)
 

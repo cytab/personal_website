@@ -5,7 +5,7 @@
  * prefers-reduced-motion (via the global safety net in global.css).
  */
 export interface Props {
-  slug: 'robotclaw' | 'openclaw' | 'drone-stack' | 'noovelia-lattice' | 'odu-slam';
+  slug: 'robotclaw' | 'noovelia-lattice' | 'odu-slam';
 }
 const { slug } = Astro.props;
 ---
@@ -27,49 +27,6 @@ const { slug } = Astro.props;
       <circle cx="52" cy="46" r="1.5" fill="#62E0C8" class="p p4"/>
       <circle cx="66" cy="40" r="1.5" fill="#62E0C8" class="p p5"/>
       <circle cx="78" cy="44" r="1.5" fill="#62E0C8" class="p p6"/>
-    </svg>
-  )}
-
-  {slug === 'openclaw' && (
-    <svg viewBox="0 0 96 64" width="96" height="64" focusable="false">
-      {/* Four nodes with linked brightening */}
-      <line x1="16" y1="32" x2="32" y2="32" stroke="#1F2427" class="link l1"/>
-      <line x1="32" y1="32" x2="64" y2="32" stroke="#1F2427" class="link l2"/>
-      <line x1="64" y1="32" x2="80" y2="32" stroke="#1F2427" class="link l3"/>
-      <circle cx="16" cy="32" r="4" fill="#15191B" stroke="#8E8A82" class="nd n1"/>
-      <circle cx="32" cy="32" r="4" fill="#15191B" stroke="#8E8A82" class="nd n2"/>
-      <circle cx="64" cy="32" r="4" fill="#15191B" stroke="#8E8A82" class="nd n3"/>
-      <circle cx="80" cy="32" r="4" fill="#15191B" stroke="#8E8A82" class="nd n4"/>
-    </svg>
-  )}
-
-  {slug === 'drone-stack' && (
-    <svg viewBox="0 0 96 64" width="96" height="64" focusable="false">
-      {/* Top-down drone silhouette with four rotating rotor arcs */}
-      <g transform="translate(48 32)">
-        {/* Airframe arms (X layout) */}
-        <line x1="-18" y1="-12" x2="18" y2="12" stroke="#8E8A82" stroke-width="1.25"/>
-        <line x1="-18" y1="12" x2="18" y2="-12" stroke="#8E8A82" stroke-width="1.25"/>
-        {/* Center body */}
-        <rect x="-4" y="-4" width="8" height="8" fill="#15191B" stroke="#8E8A82" stroke-width="1"/>
-        {/* Rotors — circles + rotating arc */}
-        <g class="rotor">
-          <circle cx="-18" cy="-12" r="7" fill="none" stroke="#1F2427"/>
-          <circle cx="-18" cy="-12" r="6.5" fill="none" stroke="#F3A03B" stroke-width="1.5" stroke-dasharray="6 30" class="blade"/>
-        </g>
-        <g class="rotor r2">
-          <circle cx="18" cy="-12" r="7" fill="none" stroke="#1F2427"/>
-          <circle cx="18" cy="-12" r="6.5" fill="none" stroke="#F3A03B" stroke-width="1.5" stroke-dasharray="6 30" class="blade"/>
-        </g>
-        <g class="rotor r3">
-          <circle cx="-18" cy="12" r="7" fill="none" stroke="#1F2427"/>
-          <circle cx="-18" cy="12" r="6.5" fill="none" stroke="#F3A03B" stroke-width="1.5" stroke-dasharray="6 30" class="blade"/>
-        </g>
-        <g class="rotor r4">
-          <circle cx="18" cy="12" r="7" fill="none" stroke="#1F2427"/>
-          <circle cx="18" cy="12" r="6.5" fill="none" stroke="#F3A03B" stroke-width="1.5" stroke-dasharray="6 30" class="blade"/>
-        </g>
-      </g>
     </svg>
   )}
 
@@ -160,41 +117,6 @@ const { slug } = Astro.props;
     50%      { transform: translateY(-3px); opacity: 1; }
   }
   .glyph--robotclaw svg { overflow: visible; }
-
-  /* openclaw — link brightening */
-  .glyph--openclaw .link {
-    stroke-width: 1.25;
-    opacity: 0.5;
-  }
-  .glyph--openclaw .l1 { animation: link-bright 3s infinite; }
-  .glyph--openclaw .l2 { animation: link-bright 3s infinite 1s; }
-  .glyph--openclaw .l3 { animation: link-bright 3s infinite 2s; }
-  @keyframes link-bright {
-    0%, 80% { stroke: #1F2427; }
-    40%     { stroke: #62E0C8; }
-  }
-  .glyph--openclaw .nd { stroke-width: 0.75; }
-  .glyph--openclaw .n1 { animation: node-pulse 3s infinite; }
-  .glyph--openclaw .n2 { animation: node-pulse 3s infinite 0.75s; }
-  .glyph--openclaw .n3 { animation: node-pulse 3s infinite 1.5s; }
-  .glyph--openclaw .n4 { animation: node-pulse 3s infinite 2.25s; }
-  @keyframes node-pulse {
-    0%, 100% { stroke: #8E8A82; }
-    50%      { stroke: #62E0C8; }
-  }
-
-  /* drone-stack — rotating blade arcs */
-  .glyph--drone-stack .blade {
-    transform-origin: center;
-    transform-box: fill-box;
-    animation: blade-spin 0.9s infinite linear;
-  }
-  .glyph--drone-stack .rotor { transform-origin: center; transform-box: fill-box; }
-  /* Each rotor animated separately — use inherited center via stroke-dashoffset cycle */
-  @keyframes blade-spin {
-    from { stroke-dashoffset: 0; }
-    to   { stroke-dashoffset: -72; }
-  }
 
   /* noovelia-lattice — path redraw */
   .glyph--noovelia-lattice .path {
