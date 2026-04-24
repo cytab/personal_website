@@ -22,7 +22,7 @@ const meta = pageMeta[locale].work;
         const p = projects[slug];
         const l = p[locale];
         return (
-          <section id={p.slug} class="work__entry" aria-labelledby={`${p.slug}-title`}>
+          <section id={p.slug} class="work__entry reveal-up project-card" aria-labelledby={`${p.slug}-title`}>
             <div class="work__grid">
               <div class="work__main">
                 <header class="work__header">
@@ -43,11 +43,11 @@ const meta = pageMeta[locale].work;
       })}
     </div>
 
-    <section class="academic" aria-labelledby="academic-title">
+    <section class="academic reveal-up" aria-labelledby="academic-title">
       <h2 id="academic-title" class="academic__title">Projets académiques</h2>
       <ul class="academic__list">
         {academicProjects.map((a) => (
-          <li id={a.slug} class="academic__item">
+          <li id={a.slug} class="academic__item project-card">
             <div class="academic__row">
               <h3 class="academic__name">{a.fr.title}</h3>
               <span class="academic__date">{a.date.fr}</span>
@@ -63,6 +63,35 @@ const meta = pageMeta[locale].work;
     </section>
   </div>
 </BaseLayout>
+
+<!-- Project-card tilt on cursor hover. ~400 B gzipped. -->
+<script is:inline>
+  (function () {
+    if (window.matchMedia('(hover: none)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var cards = document.querySelectorAll('.project-card');
+    cards.forEach(function (card) {
+      var pending = false, lastX = 0, lastY = 0;
+      function apply() {
+        card.style.setProperty('--tilt-x', lastX.toFixed(2) + 'deg');
+        card.style.setProperty('--tilt-y', lastY.toFixed(2) + 'deg');
+        pending = false;
+      }
+      card.addEventListener('mousemove', function (e) {
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width;
+        var py = (e.clientY - r.top) / r.height;
+        lastY = (px - 0.5) * 2 * 4;
+        lastX = -(py - 0.5) * 2 * 4;
+        if (!pending) { requestAnimationFrame(apply); pending = true; }
+      });
+      card.addEventListener('mouseleave', function () {
+        lastX = 0; lastY = 0;
+        if (!pending) { requestAnimationFrame(apply); pending = true; }
+      });
+    });
+  })();
+</script>
 
 <style>
   .page {
@@ -235,5 +264,15 @@ const meta = pageMeta[locale].work;
   .academic__closing a:hover,
   .academic__closing a:focus-visible {
     text-decoration-color: var(--primary);
+  }
+
+  .project-card {
+    transform: perspective(800px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transform-style: preserve-3d;
+    transition: transform 300ms var(--ease-default);
+    will-change: transform;
+  }
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .project-card { transform: none !important; transition: none; }
   }
 </style>

@@ -15,12 +15,18 @@ the whole site.
   (`src/components/RobotArm/`) via `client:visible`. The React integration
   is added back via `@astrojs/react`, but it does not hydrate on `/work/`,
   `/research/`, `/about/` or their FR mirrors.
+- **Interactive layer** — cursor spotlight (home + about), ⌘K / Ctrl+K
+  command palette (global, native `<dialog>`), numeric counters on CV
+  bullets, click-to-copy email, scroll-reveal sections, key-term hover
+  tooltips on Research (HTML Popover API), and cursor-reactive card
+  tilt on Work. All vanilla JS, no frameworks, all under their route
+  gzip budgets.
 
 No Framer Motion. No R3F. No View Transitions. No global ambient layer.
-Every non-home route is zero-or-near-zero client JS — only a ~200 B inline
-scroll-progress polyfill script is inlined on `/` and `/fr/` (guarded by
-`CSS.supports('animation-timeline:scroll()')` and skipped on modern
-browsers). Work / Research / About micro-motion is pure SVG + CSS.
+Every non-home route ships only small inline scripts (≤ 5 KB gzip per
+route) for the interactive layer. Work / Research / About micro-motion is
+pure SVG + CSS. The scroll-progress bar on `/` uses a feature-detected
+CSS `animation-timeline: scroll()` with a tiny rAF polyfill fallback.
 
 ## Install & develop
 

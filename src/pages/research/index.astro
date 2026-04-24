@@ -7,6 +7,38 @@ import ResearchMotifs from '@/components/ResearchMotifs.astro';
 const locale = 'en' as const;
 const meta = pageMeta[locale].research;
 const c = clusters;
+
+// Key-term definitions for hover tooltips. Each term is wrapped on its
+// first occurrence across all cluster paragraphs. Static HTML uses the
+// HTML Popover API (supported across evergreen browsers).
+const TERMS_EN: Array<{ match: RegExp; id: string; label: string; def: string }> = [
+  { match: /\bSLAM\b/,            id: 'th-slam',  label: 'SLAM',  def: 'Simultaneous Localization And Mapping — the robot builds a map while it figures out where it is inside that map.' },
+  { match: /\bPOMDPs?\b/,         id: 'th-pomdp', label: 'POMDP', def: "Partially Observable Markov Decision Process — planning when you can't fully see the state of the world." },
+  { match: /\bMCTS\b/,            id: 'th-mcts',  label: 'MCTS',  def: 'Monte Carlo Tree Search — explore decision trees by running a lot of cheap simulations.' },
+  { match: /\bMPC\b/,             id: 'th-mpc',   label: 'MPC',   def: "Model Predictive Control — predict the next few seconds and pick the control that's best, repeat every tick." },
+  { match: /\bROS\s?2\b/,         id: 'th-ros2',  label: 'ROS 2', def: 'Robot Operating System, version 2 — the standard publish/subscribe middleware for robot software.' },
+  { match: /\bBehavior trees?\b/i, id: 'th-bt',   label: 'Behavior trees', def: 'A hierarchy of small reactive behaviors a robot chooses from each tick.' },
+];
+
+function wrapTerms(body: string, terms: typeof TERMS_EN): string {
+  let out = body;
+  const used = new Set<string>();
+  for (const t of terms) {
+    if (used.has(t.id)) continue;
+    const m = out.match(t.match);
+    if (!m) continue;
+    const matched = m[0];
+    const btn = `<button type="button" class="term-hint" popovertarget="${t.id}" aria-describedby="${t.id}">${matched}</button>`;
+    out = out.replace(matched, btn);
+    used.add(t.id);
+  }
+  return out;
+}
+
+const perceptionHTML = wrapTerms(c.perception[locale].body, TERMS_EN);
+const planningHTML = wrapTerms(c.planning[locale].body, TERMS_EN);
+const humanHTML = wrapTerms(c.human[locale].body, TERMS_EN);
+const systemsHTML = wrapTerms(c.systems[locale].body, TERMS_EN);
 ---
 
 <BaseLayout locale={locale} title={meta.title} description={meta.description} pathKey="research/">
@@ -19,29 +51,36 @@ const c = clusters;
     </header>
 
     <div class="clusters">
-      <section class="cluster" aria-labelledby="perception-title">
+      <section class="cluster reveal-up" aria-labelledby="perception-title">
         <ResearchMotifs kind="perception" />
         <h2 id="perception-title" class="cluster__title">{c.perception[locale].title}</h2>
-        <p class="prose t-reading">{c.perception[locale].body}</p>
+        <p class="prose t-reading" set:html={perceptionHTML}></p>
       </section>
-      <section class="cluster" aria-labelledby="planning-title">
+      <section class="cluster reveal-up" aria-labelledby="planning-title">
         <ResearchMotifs kind="planning" />
         <h2 id="planning-title" class="cluster__title">{c.planning[locale].title}</h2>
-        <p class="prose t-reading">{c.planning[locale].body}</p>
+        <p class="prose t-reading" set:html={planningHTML}></p>
       </section>
-      <section class="cluster" aria-labelledby="human-title">
+      <section class="cluster reveal-up" aria-labelledby="human-title">
         <ResearchMotifs kind="human" />
         <h2 id="human-title" class="cluster__title">{c.human[locale].title}</h2>
-        <p class="prose t-reading">{c.human[locale].body}</p>
+        <p class="prose t-reading" set:html={humanHTML}></p>
       </section>
-      <section class="cluster" aria-labelledby="systems-title">
+      <section class="cluster reveal-up" aria-labelledby="systems-title">
         <ResearchMotifs kind="systems" />
         <h2 id="systems-title" class="cluster__title">{c.systems[locale].title}</h2>
-        <p class="prose t-reading">{c.systems[locale].body}</p>
+        <p class="prose t-reading" set:html={systemsHTML}></p>
       </section>
     </div>
 
-    <section class="frontier" aria-labelledby="frontier-title">
+    {TERMS_EN.map((t) => (
+      <div id={t.id} popover="auto" class="term-hint-popover" role="tooltip">
+        <strong>{t.label}</strong>
+        {t.def}
+      </div>
+    ))}
+
+    <section class="frontier reveal-up" aria-labelledby="frontier-title">
       <h2 id="frontier-title" class="cluster__title">What I'm pulling in</h2>
       <ul class="frontier__list">
         {frontierBridges[locale].map((bridge) => <li>{bridge}</li>)}

@@ -196,3 +196,130 @@ blockquote {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================================
+   Scroll-reveal sections (Work / Research / About).
+   Pure CSS. Uses animation-timeline: view() when supported.
+   Keeps opacity at 1 throughout so a11y color-contrast passes
+   even for below-fold elements at page load; only translates on
+   enter (a subtle lift). Fallback: no animation, static layout.
+   ============================================================ */
+.reveal-up { transform: none; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-up {
+      animation: reveal-up linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% cover 18%;
+      will-change: transform;
+    }
+  }
+}
+@keyframes reveal-up {
+  from { transform: translateY(12px); }
+  to   { transform: translateY(0); }
+}
+
+/* ============================================================
+   Copy-email toast — shared with CommandPalette for consistency.
+   ============================================================ */
+.cmdk-toast {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 1000;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-1);
+  border: 1px solid color-mix(in srgb, var(--primary) 40%, var(--surface-2));
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: var(--tr-mono);
+  box-shadow: 0 8px 24px -8px rgba(0,0,0,0.4);
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 160ms ease, transform 160ms ease;
+  pointer-events: none;
+}
+.cmdk-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   Copy-email button — inline amber clipboard icon.
+   ============================================================ */
+.copy-email {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin-inline-start: 0.25em;
+  vertical-align: -3px;
+  color: var(--ink-muted);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color 120ms ease, background 120ms ease;
+}
+.copy-email:hover,
+.copy-email:focus-visible {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+.copy-email svg { width: 14px; height: 14px; display: block; }
+.copy-email.is-copied { color: var(--primary); }
+
+/* ============================================================
+   Term-hint popover (Research page). Tooltip styled from tokens.
+   ============================================================ */
+.term-hint {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: help;
+  border-bottom: 1px dotted color-mix(in srgb, var(--primary) 55%, transparent);
+  text-decoration: none;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+.term-hint:hover,
+.term-hint:focus-visible {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+.term-hint-popover {
+  position: absolute;
+  inset: auto;
+  max-width: min(320px, 80vw);
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-1);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+  box-shadow: 0 8px 24px -10px rgba(0,0,0,0.4);
+  opacity: 0;
+  transition: opacity 200ms ease 80ms, transform 200ms ease 80ms;
+  transform: translateY(-4px);
+}
+.term-hint-popover:popover-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+.term-hint-popover strong {
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: var(--tr-mono);
+  display: block;
+  margin-bottom: var(--space-1);
+}
