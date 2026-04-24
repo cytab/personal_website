@@ -1,13 +1,13 @@
 {
   "name": "cyrille-tabe-site",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Personal website for Cyrille Tabe — a manifesto rendered in pixels, not a résumé.",
+  "description": "Personal website for Cyrille Tabe — static, lightweight, content-first.",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "node scripts/generate-og.mjs && astro check && astro build",
+    "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
@@ -18,27 +18,19 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/mdx": "^3.1.9",
-    "@astrojs/react": "^3.6.3",
     "@astrojs/rss": "^4.0.10",
     "@astrojs/sitemap": "3.2.1",
     "@astrojs/tailwind": "^5.1.4",
     "@fontsource/inter": "^5.1.0",
     "@fontsource/jetbrains-mono": "^5.1.1",
     "astro": "^4.16.18",
-    "framer-motion": "^11.15.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.17",
-    "three": "^0.162.0",
     "typescript": "^5.7.2"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.59.1",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
-    "@types/three": "^0.162.0",
     "axe-core": "^4.11.3"
   },
   "engines": {

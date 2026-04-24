@@ -1,6 +1,5 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
-import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
 
@@ -20,7 +19,6 @@ export default defineConfig({
   },
   integrations: [
     tailwind({ applyBaseStyles: false }),
-    react(),
     mdx(),
     sitemap(),
   ],
@@ -32,13 +30,4 @@ export default defineConfig({
     },
   },
   compressHTML: true,
-  vite: {
-    ssr: {
-      noExternal: ['framer-motion'],
-    },
-    build: {
-      // Keep chunks small; R3F island should be lazy-loaded on its own chunk.
-      chunkSizeWarningLimit: 260,
-    },
-  },
 });
