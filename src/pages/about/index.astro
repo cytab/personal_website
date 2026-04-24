@@ -63,59 +63,22 @@ const uit = ui[locale];
       <p class="cv-download__note">{c.download.note}</p>
     </header>
 
-    <section class="cv-section reveal-up" aria-labelledby="edu-title">
-      <h2 id="edu-title" class="cv-section__title">{c.education.heading}</h2>
-      <div class="cv-entries">
-        {c.education.items.map((item) => (
-          <article class="cv-entry">
-            <div class="cv-entry__row">
-              <h3 class="cv-entry__title">{item.title}</h3>
-              <p class="cv-entry__date">{item.date}</p>
-            </div>
-            <p class="cv-entry__sub">{item.institution}</p>
-          </article>
-        ))}
-      </div>
+    <section class="cv-section reveal-up">
+      <p class="prose t-reading cv-intro">{c.aboutMe.body}</p>
     </section>
 
-    <section id="professional-experience" class="cv-section reveal-up" aria-labelledby="exp-title">
-      <h2 id="exp-title" class="cv-section__title">{c.experience.heading}</h2>
-      <div class="cv-entries">
-        {c.experience.items.map((job) => (
-          <article class="cv-entry">
-            <div class="cv-entry__row">
-              <h3 class="cv-entry__title">
-                <span class="cv-entry__company">{job.company}</span>
-                {' — '}
-                <span class="cv-entry__role">{job.role}</span>
-              </h3>
-              <p class="cv-entry__date">{job.date}</p>
-            </div>
-            <p class="cv-entry__sub">{job.location}</p>
-            <ul class="cv-bullets">
-              {job.bullets.map((b) => <li>{b}</li>)}
-            </ul>
-          </article>
+    <section class="cv-section reveal-up" aria-labelledby="now-title">
+      <h2 id="now-title" class="cv-section__title">{c.now.heading}</h2>
+      <ul class="cv-now">
+        {c.now.items.map((item) => (
+          <li class="cv-now__item">
+            <span class="cv-now__role">{item.role}</span>
+            <span class="cv-now__org">{item.org}</span>
+            <span class="cv-now__date">{item.date}</span>
+          </li>
         ))}
-      </div>
-    </section>
-
-    <section class="cv-section reveal-up" aria-labelledby="res-title">
-      <h2 id="res-title" class="cv-section__title">{c.research.heading}</h2>
-      <div class="cv-entries">
-        {c.research.items.map((r) => (
-          <article class="cv-entry">
-            <div class="cv-entry__row">
-              <h3 class="cv-entry__title">{r.title}</h3>
-              <p class="cv-entry__date">{r.date}</p>
-            </div>
-            <p class="cv-entry__sub">{r.institution}</p>
-            <ul class="cv-bullets">
-              {r.bullets.map((b) => <li>{b}</li>)}
-            </ul>
-          </article>
-        ))}
-      </div>
+      </ul>
+      <p class="cv-now__edu">{c.now.edu}</p>
     </section>
 
     <section id="skills" class="cv-section reveal-up" aria-labelledby="skills-title">
@@ -150,32 +113,16 @@ const uit = ui[locale];
       </dl>
     </section>
 
-    <section class="cv-section reveal-up" aria-labelledby="aboutme-title">
-      <h2 id="aboutme-title" class="cv-section__title">{c.aboutMe.heading}</h2>
-      <p class="prose t-reading">{c.aboutMe.body}</p>
-    </section>
-
-    <p class="contact prose">
-      Contact: <a href={`mailto:${c.contact.email}`}>{c.contact.email}</a>
-      <button
-        class="copy-email"
-        type="button"
-        data-copy-email={c.contact.email}
-        data-copy-toast={uit.copy.toast}
-        data-copy-failed={uit.copy.failed}
-        aria-label={uit.copy.label}
-        title={uit.copy.label}
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <rect x="9" y="9" width="11" height="11" rx="2"></rect>
-          <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
-        </svg>
-      </button>
+    <p class="cv-linkout prose">
+      {c.now.linkoutPrefix}
+      {' '}<a href="/cv/cyrille-tabe-cv-en.pdf" download>{c.now.linkoutPdfLabel}</a>{c.now.linkoutMid}
+      {' '}<a href="/work/">{c.now.linkoutWorkLabel}</a> {c.now.linkoutAnd}
+      {' '}<a href="/research/">{c.now.linkoutResearchLabel}</a>{c.now.linkoutSuffix}
     </p>
   </div>
 </BaseLayout>
 
-<!-- Copy-email + count-up (~700 B gzipped combined). -->
+<!-- Copy-email (~350 B gzipped). -->
 <script is:inline>
   (function () {
     // Copy email buttons
@@ -214,44 +161,6 @@ const uit = ui[locale];
       });
     });
 
-    // Count-up animation for CV bullet numbers.
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    // Match: "14%", "14 %", "14 %" with NBSP, "3+" (weeks/semaines), "3+ weeks"
-    // We wrap the entire number+optional-suffix as a span we can animate.
-    var bullets = document.querySelectorAll('.cv-bullets li');
-    bullets.forEach(function (li) {
-      if (li.querySelector('.count-up')) return;
-      var html = li.innerHTML;
-      // Numeric patterns: NN%, NN %, NN %, NN+
-      var out = html.replace(/(\d+)( %|\s%|%|\+)/g, function (_m, num, suf) {
-        return '<span class="count-up" data-to="' + num + '" data-suffix="' + suf.replace(/"/g, '') + '">' + num + suf + '</span>';
-      });
-      if (out !== html) li.innerHTML = out;
-    });
-
-    var spans = document.querySelectorAll('.count-up');
-    if (!spans.length || !('IntersectionObserver' in window)) return;
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (ent) {
-        if (!ent.isIntersecting) return;
-        var el = ent.target;
-        io.unobserve(el);
-        var to = parseInt(el.getAttribute('data-to') || '0', 10);
-        var suf = el.getAttribute('data-suffix') || '';
-        var dur = 900;
-        var t0 = performance.now();
-        function frame(now) {
-          var t = Math.min(1, (now - t0) / dur);
-          // ease-out cubic
-          var v = 1 - Math.pow(1 - t, 3);
-          var n = Math.round(to * v);
-          el.textContent = n + suf;
-          if (t < 1) requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
-      });
-    }, { threshold: 0.4 });
-    spans.forEach(function (s) { io.observe(s); });
   })();
 </script>
 
@@ -496,11 +405,68 @@ const uit = ui[locale];
     font-weight: var(--fw-semibold);
   }
 
-  .contact {
+  /* ---------- Intro ---------- */
+  .cv-intro {
+    margin: 0;
+    color: var(--ink);
+  }
+
+  /* ---------- Currently ---------- */
+  .cv-now {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-3) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .cv-now__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.55rem;
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+    color: var(--ink);
+  }
+  .cv-now__role {
+    font-weight: var(--fw-semibold);
+    color: var(--ink);
+  }
+  .cv-now__org {
+    color: var(--ink-muted);
+    padding-left: 0.35rem;
+    border-left: 1px solid color-mix(in srgb, var(--ink-muted) 35%, transparent);
+  }
+  .cv-now__date {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: var(--tr-micro);
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+  .cv-now__edu {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: var(--tr-micro);
+    color: var(--ink-muted);
+    margin: 0;
+  }
+
+  /* ---------- Link-out ---------- */
+  .cv-linkout {
     margin-top: var(--space-5);
     color: var(--ink-muted);
   }
-  .contact a {
+  .cv-linkout a {
     color: var(--primary);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--primary) 40%, transparent);
+    transition: text-decoration-color 120ms ease;
+  }
+  .cv-linkout a:hover,
+  .cv-linkout a:focus-visible {
+    text-decoration-color: var(--primary);
   }
 </style>

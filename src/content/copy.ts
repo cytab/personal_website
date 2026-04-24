@@ -379,6 +379,21 @@ export const cv = {
       body:
         "The through-line across all of this is simple: how should a machine act when it doesn't know what the world looks like? I prefer local-first systems, builder-first research, and code that has to run tomorrow morning. The things I'm currently pulling in from outside robotics — neuroscience of decision-making, causal inference, affective computing — are there because the hardest sensor to model is still the person in the room.",
     },
+    now: {
+      heading: 'Currently',
+      items: [
+        { role: 'Robotics Software Engineer', org: 'Noovelia', date: 'July 2025 — Current' },
+        { role: 'AI Solution Consultant', org: 'Odu Technologie', date: 'Jan 2023 — Jan 2026' },
+      ],
+      edu: 'M.Sc. Electrical Engineering · Polytechnique Montréal · 2025',
+      linkoutPrefix: 'Full experience is in the',
+      linkoutPdfLabel: 'PDF CV',
+      linkoutMid: '. See what I am building in',
+      linkoutWorkLabel: 'Work',
+      linkoutAnd: 'and what I think about in',
+      linkoutResearchLabel: 'Research',
+      linkoutSuffix: '.',
+    },
   },
   fr: {
     name: 'Cyrille Tabe',
@@ -515,6 +530,21 @@ export const cv = {
       heading: 'À propos',
       body:
         "Le fil conducteur à travers tout ça est simple : comment une machine doit-elle agir quand elle ne sait pas à quoi ressemble le monde ? Je préfère les systèmes local-first, la recherche du côté du builder, et le code qui doit tourner demain matin. Ce que je vais chercher en dehors de la robotique — neurosciences de la décision, inférence causale, informatique affective — est là parce que le capteur le plus difficile à modéliser, c'est encore la personne dans la pièce.",
+    },
+    now: {
+      heading: 'En ce moment',
+      items: [
+        { role: 'Ingénieur logiciel en robotique', org: 'Noovelia', date: 'Juillet 2025 — Actuel' },
+        { role: 'Consultant en solutions IA', org: 'Odu Technologie', date: 'Janv. 2023 — Janv. 2026' },
+      ],
+      edu: 'M.Sc. Génie électrique · Polytechnique Montréal · 2025',
+      linkoutPrefix: 'L’expérience complète est dans le',
+      linkoutPdfLabel: 'CV en PDF',
+      linkoutMid: '. Voir ce que je construis dans',
+      linkoutWorkLabel: 'Travaux',
+      linkoutAnd: 'et ce que je lis dans',
+      linkoutResearchLabel: 'Recherche',
+      linkoutSuffix: '.',
     },
   },
 };
